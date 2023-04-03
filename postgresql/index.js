@@ -11,15 +11,14 @@ const models = [Part, Order, Reviews, Settings, User, TreeTranslate];
 
 let db = {};
 // Create a new instance of Sequelize
+
 async function initialize() {
   if (Object.keys(db).length === 0) {
     const sequelize = new Sequelize(
     {
       database: "root",
-      // database: "auto-parts",
-      username: "postgres",
+      username: "root",
       password: "autoParts123!",
-      // password: "qwerty",
       host: '127.0.0.1',
       dialect: 'postgres',
       protocol: 'postgres',

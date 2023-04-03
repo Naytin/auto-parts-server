@@ -3,7 +3,6 @@ const cors = require('cors');
 const app = express();
 const bodyParser = require('body-parser')
 const routes = require('./routes')
-// const {updateParts} = require('./uniquetrade')
 const {initialize} = require('./postgresql')
 const main = require('./uniquetrade')
 
