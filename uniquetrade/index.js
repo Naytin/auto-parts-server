@@ -1,6 +1,6 @@
 const {instance, token_data} = require('./config')
 const {db} = require('../postgresql')
-
+const cron = require('node-cron');
 const authErrors = ['JWT Token not found', 'Invalid JWT Token', 'Expired JWT Token']
 const timeout = async (time) =>  await new Promise(r => setTimeout(r, time));
 
@@ -169,20 +169,20 @@ const getPriceList = async (id = '', token_data = '')=> {
 
 const main = async () => {
   try {
-    // await timeout(18000)
+    await timeout(18000)
     console.log('init main')
     //get params
-    // const brands = await getParams()
-    // if (!brands) throw new Error('Произошла ошибка получения брендов')
+    const brands = await getParams()
+    if (!brands) throw new Error('Произошла ошибка получения брендов')
     console.log('brands')
     //request for price list
-    // const id = await requestPriceList(brands)
-    // if (!id) throw new Error('Произошла ошибка в запросе на прайс лист')
+    const id = await requestPriceList(brands)
+    if (!id) throw new Error('Произошла ошибка в запросе на прайс лист')
     console.log('requestPriceList')
     //get token of price list
-    // await timeout(18000)
+    await timeout(18000)
     const token = await getPriceLists(649344)
-    // if (!token) throw new Error('Произошла ошибка в получении токена прайс листа')
+    if (!token) throw new Error('Произошла ошибка в получении токена прайс листа')
     console.log('getPriceLists', token)
     //git price list
     const pricelist = await getPriceList(token)
@@ -203,4 +203,15 @@ const main = async () => {
   }
 }
 
-module.exports = main
+const cronJob = () => {
+  cron.schedule('0 0 * * *', async () => {
+    try {
+      main()
+      console.log('Данные успешно сохранены в БД');
+    } catch (error) {
+      console.error('Ошибка при выполнении задачи:', error);
+    }
+  });
+}
+
+module.exports = cronJob
