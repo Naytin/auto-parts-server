@@ -4,7 +4,7 @@ const app = express();
 const bodyParser = require('body-parser')
 const routes = require('./routes')
 const {initialize} = require('./postgresql')
-const cronJob = require('./uniquetrade')
+const {cronJob, main} = require('./uniquetrade')
 
 const PORT = process.env.PORT || 8081;
 // Конфигурация подключения к базе данных
@@ -17,6 +17,7 @@ app.use('/', routes);
 //init database 
 initialize()
 // cronJob()
+main()
 
 // Запуск сервера
 app.listen(8081, () => {

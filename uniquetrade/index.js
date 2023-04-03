@@ -40,7 +40,7 @@ const updateToken = async () => {
 const getToken = async () => {
   const authKey = await db.Settings.findOne({where: {id: 1}});
   if (!authKey) {
-    await db.Settings.create({});
+    await db.Settings.create();
   }
   console.log('key', authKey?.expiration_date);
   console.log('key', authKey?.uniq_trade_token);
@@ -121,7 +121,6 @@ const getPriceLists = async (id = '', token_data = '')=> {
 
     instance.defaults.headers.common['Authorization'] = token;
     const {data} = await instance.get(`pricelists`)
-    console.log(data)
     const pricelist = data.find(p => p.id === id)
     console.log('1', pricelist)
     if (pricelist.status === 'in queue') {
@@ -172,12 +171,12 @@ const main = async () => {
     await timeout(18000)
     console.log('init main')
     //get params
-    const brands = await getParams()
-    if (!brands) throw new Error('Произошла ошибка получения брендов')
+    // const brands = await getParams()
+    // if (!brands) throw new Error('Произошла ошибка получения брендов')
     console.log('brands')
     //request for price list
-    const id = await requestPriceList(brands)
-    if (!id) throw new Error('Произошла ошибка в запросе на прайс лист')
+    // const id = await requestPriceList(brands)
+    // if (!id) throw new Error('Произошла ошибка в запросе на прайс лист')
     console.log('requestPriceList')
     //get token of price list
     await timeout(18000)
@@ -188,16 +187,16 @@ const main = async () => {
     const pricelist = await getPriceList(token)
     console.log('getPriceList', pricelist?.length)
 
-    if (pricelist?.length > 0) {
-      const res = await db.Part.destroy({where: {}})
+    // if (pricelist?.length > 0) {
+    //   const res = await db.Part.destroy({where: {}})
       
-      for (let i = 0; i < pricelist.length; i++) {
-        await db.Part.create(pricelist[i])
-      }
-      console.log('delete table', res)
-    } else {
-      throw new Error('Произошла ошибка в получении прас листа')
-    }
+    //   for (let i = 0; i < pricelist.length; i++) {
+    //     await db.Part.create(pricelist[i])
+    //   }
+    //   console.log('delete table', res)
+    // } else {
+    //   throw new Error('Произошла ошибка в получении прас листа')
+    // }
   } catch (error) {
     throw error
   }
@@ -214,4 +213,7 @@ const cronJob = () => {
   });
 }
 
-module.exports = cronJob
+module.exports = {
+  main,
+  cronJob
+}
