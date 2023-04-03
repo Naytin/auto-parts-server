@@ -1,13 +1,57 @@
-const {instance, token_data} = require('./config')
 const {db} = require('../postgresql')
 const cron = require('node-cron');
+const request = require('request')
 const authErrors = ['JWT Token not found', 'Invalid JWT Token', 'Expired JWT Token']
 const timeout = async (time) =>  await new Promise(r => setTimeout(r, time));
 
+const prepareParts = (parts) => {
+  return parts.map(p => {
+    const { 
+      "Артикул": article,
+      "Наименование": title,
+      "Бренд": brand,
+      "Валюта": currency,
+      "Цена": price,
+      ...rest
+    } = p;
+
+    return {
+      article,
+      title,
+      brand,
+      currency,
+      price,
+      remainsAll: {...rest}
+    }
+  })
+  
+}
+
+const token_data = JSON.stringify({
+  "refresh_token": "a7d9f33162704f4bce54d38a2ca27fbe699e459fefdf83b3858165101340f68a692d9806f27f7f280f5c8ff8da4d165e14012ce7c4d604406c5d533fc9f8f85e",
+  "browser_fingerprint": "cb6a784884cef585b514a76f3509118a"
+});
+
 const refresh_token = async () => {
   try {
-    const response = await instance.post('api/token/refresh', token_data)
-    return response.data
+    const options = {
+      method: 'POST',
+      url: 'https://order24-api.utr.ua/api/token/refresh',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: token_data
+    };
+
+    const response = await new Promise((resolve, reject) => {
+      request(options, (error, response) => {
+        if (error) reject(error);
+        const res = JSON.parse(response.body)
+        resolve(res);
+      });
+    });
+    console.log()
+    return response
   } catch (error) {
     console.log(error)
   }
@@ -67,10 +111,25 @@ const getParams = async (token_data = '')=> {
       token = await getToken()
     }
 
-    instance.defaults.headers.common['Authorization'] = token;
-    const {data} = await instance.get(`pricelists/export-params`)
-    console.log(data?.brands)
-    return data?.brands?.map(b => b.id)
+    const options = {
+      method: 'GET',
+      url: 'https://order24-api.utr.ua/pricelists/export-params',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': token
+      }
+    };
+
+    const response = await new Promise((resolve, reject) => {
+      request(options, (error, response) => {
+        if (error) reject(error);
+        const res = JSON.parse(response.body)
+        resolve(res);
+      });
+    });
+
+    console.log(response?.brands)
+    return response?.brands?.map(b => b.id)
   } catch (error) {
     console.log(error)
     if (authErrors.includes(error?.response?.data?.message)) {
@@ -91,15 +150,30 @@ const requestPriceList = async (brands = [], token_data = '')=> {
       token = await getToken()
     }
 
-    instance.defaults.headers.common['Authorization'] = token;
-    const {data} = await instance.post(`pricelists/export-request`, {
-      "brandsId": brands,
-      "format":"json",
-      "utrArticle":false,
-      "inStock":true
-    })
+    const options = {
+      method: 'POST',
+      url: 'https://order24-api.utr.ua/pricelists/export-request',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': token
+      },
+      body: {
+        "brandsId": brands,
+        "format":"json",
+        "utrArticle":false,
+        "inStock":true
+      }
+    };
+
+    const response = await new Promise((resolve, reject) => {
+      request(options, (error, response) => {
+        if (error) reject(error);
+        const res = JSON.parse(response.body)
+        resolve(res);
+      });
+    });
     
-    return data.id
+    return response.id
   } catch (error) {
     if (authErrors.includes(error?.response?.data?.message)) {
       console.log(error?.response?.data);
@@ -119,9 +193,24 @@ const getPriceLists = async (id = '', token_data = '')=> {
       token = await getToken()
     }
 
-    instance.defaults.headers.common['Authorization'] = token;
-    const {data} = await instance.get(`pricelists`)
-    const pricelist = data.find(p => p.id === id)
+    const options = {
+      method: 'GET',
+      url: 'https://order24-api.utr.ua/pricelists',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': token
+      }
+    };
+
+    const response = await new Promise((resolve, reject) => {
+      request(options, (error, response) => {
+        if (error) reject(error);
+        const res = JSON.parse(response.body)
+        resolve(res);
+      });
+    });
+
+    const pricelist = response.find(p => p.id === id)
     console.log('1', pricelist)
     if (pricelist.status === 'in queue') {
       await timeout(6000)
@@ -150,10 +239,24 @@ const getPriceList = async (id = '', token_data = '')=> {
       token = await getToken()
     }
 
-    instance.defaults.headers.common['Authorization'] = token;
-    const {data} = await instance.get(`pricelists/export/${id}`)
+    const options = {
+      method: 'GET',
+      url: `https://order24-api.utr.ua/pricelists/export/${id}`,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': token
+      }
+    };
 
-    return data
+    const response = await new Promise((resolve, reject) => {
+      request(options, (error, response) => {
+        if (error) reject(error);
+        const res = JSON.parse(response.body)
+        resolve(res);
+      });
+    });
+
+    return response
   } catch (error) {
     if (authErrors.includes(error?.response?.data?.message)) {
       console.log(error?.response?.data);
@@ -170,6 +273,7 @@ const main = async () => {
   try {
     await timeout(18000)
     console.log('init main')
+    // await refresh_token()
     //get params
     // const brands = await getParams()
     // if (!brands) throw new Error('Произошла ошибка получения брендов')
@@ -179,24 +283,25 @@ const main = async () => {
     // if (!id) throw new Error('Произошла ошибка в запросе на прайс лист')
     console.log('requestPriceList')
     //get token of price list
-    await timeout(18000)
+    // await timeout(18000)
     const token = await getPriceLists(649344)
     if (!token) throw new Error('Произошла ошибка в получении токена прайс листа')
     console.log('getPriceLists', token)
-    //git price list
+    // git price list
     const pricelist = await getPriceList(token)
-    console.log('getPriceList', pricelist?.length)
+    console.log('getPriceList', pricelist?.length) 
 
-    // if (pricelist?.length > 0) {
-    //   const res = await db.Part.destroy({where: {}})
-      
-    //   for (let i = 0; i < pricelist.length; i++) {
-    //     await db.Part.create(pricelist[i])
-    //   }
-    //   console.log('delete table', res)
-    // } else {
-    //   throw new Error('Произошла ошибка в получении прас листа')
-    // }
+    if (pricelist?.length > 0) {
+      const res = await db.Part.destroy({where: {}})
+      const price = prepareParts(pricelist)
+
+      for (let i = 0; i < price.length; i++) {
+        await db.Part.create(price[i])
+      }
+      console.log('delete table', res)
+    } else {
+      throw new Error('Произошла ошибка в получении прас листа')
+    }
   } catch (error) {
     throw error
   }

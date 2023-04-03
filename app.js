@@ -16,8 +16,8 @@ app.use(bodyParser.json())
 app.use('/', routes); 
 //init database 
 initialize()
-// cronJob()
-main()
+cronJob()
+// main() 
 
 // Запуск сервера
 app.listen(8081, () => {
