@@ -2,7 +2,29 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../mysql')
 const {db} = require('../postgresql')
+const {searchList} = require('../uniquetrade')
 const  {Op} = require('sequelize');
+
+const IDS = [21,35]
+const filterPartByExist = (part) => {
+  //makes filter by remains, it means availability product
+  if (part.remains && part.remains.length > 0) {
+    const toOrder = Boolean(part.remains?.find(r => IDS.includes(r?.storage?.id)))
+    const availability = Boolean(part.remains?.find(r => !IDS.includes(r?.storage?.id)))
+
+    let {id,brand,article,title,yourPrice,images, remains, remainsAll} = part
+    images = images?.map(img => ({fullImagePath: img.fullImagePath})).filter((_,i) => i === 0) || []
+
+    return {id,brand,article,title,yourPrice,images, availability, toOrder,remainsAll: remainsAll || [], remains}
+  } else {
+    let {id,brand,article,title,yourPrice,images, remainsAll, remains} = part
+    images = images?.map((img) => ({fullImagePath: img.fullImagePath})).filter((_,i) => i === 0) || []
+    const toOrder = Boolean(part.remainsAll?.find(r => IDS.includes(r?.storage?.id)))
+    const availability = Boolean(part.remainsAll?.find(r => !IDS.includes(r?.storage?.id) && Number(r.remain) !== 0))
+    
+    return {id,brand,article,title, yourPrice, images, availability, toOrder, remainsAll: remainsAll || [], remains}
+  }
+}
 
 router.post('/api/parts', async (req, res) => {
   try {
@@ -51,14 +73,32 @@ router.post('/api/parts', async (req, res) => {
         }
       }
     });
+
+    const list = p.map(part => ({oem: part.article, brand: part.brand}))
+    //get details about part
+    const result = await searchList(list)
+    //prepare details
+    const details = result?.map(p => {
+      if (p?.details?.length > 0) {
+        return filterPartByExist({...p.details[0]})
+      }
+    })
     const parts = p.map(part => {
+      const current = details.find(d => d)
+      const {id, yourPrice, images, availability, toOrder,remainsAll, remains} = current
+
       return {
         ...part.dataValues,
         brand: {name: part.brand},
         yourPrice: {amount: Number(part.price)},
-        images: [],
+        yourPrice2: yourPrice,
+        images: images || [],
         remainsAll_2: {...part.remainsAll},
-        remainsAll: [],
+        remainsAll: remainsAll || [],
+        remains,
+        id,
+        availability, 
+        toOrder,
         remain: Object.values({...part.remainsAll}).reduce((acc, cur) =>  acc + Number(cur.replace(/\s|>|</g, '')) ,0)
       }
     })

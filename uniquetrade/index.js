@@ -1,6 +1,6 @@
 const {db} = require('../postgresql')
 const request = require('request')
-const authErrors = ['JWT Token not found', 'Invalid JWT Token', 'Expired JWT Token']
+const authErrors = ['JWT Token not found', 'Invalid JWT Token', 'Expired JWT Token', 'Unauthorized']
 const timeout = async (time) =>  await new Promise(r => setTimeout(r, time));
 
 const prepareParts = (parts) => {
@@ -25,11 +25,35 @@ const prepareParts = (parts) => {
   })
   
 }
-
-const token_data = JSON.stringify({
+const token_id = {
   "refresh_token": "a7d9f33162704f4bce54d38a2ca27fbe699e459fefdf83b3858165101340f68a692d9806f27f7f280f5c8ff8da4d165e14012ce7c4d604406c5d533fc9f8f85e",
   "browser_fingerprint": "cb6a784884cef585b514a76f3509118a"
-});
+}
+const token_data = JSON.stringify(token_id);
+
+const checkJWT = async (token) => {
+  try {
+    const options = {
+      method: 'GET',
+      url: 'https://order24-api.utr.ua/pricelists',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': token
+      }
+    };
+
+    const response = await new Promise((resolve, reject) => {
+      request(options, (error, response) => {
+        if (error) reject(error);
+        resolve(response?.statusMessage);
+      });
+    });
+
+    return response
+  } catch (error) {
+    
+  }
+}
 
 const refresh_token = async () => {
   try {
@@ -99,7 +123,14 @@ const getToken = async () => {
     //update token
     return await updateToken()
   }
-
+  const token = `Bearer ${authKey.uniq_trade_token}`
+  const message = await checkJWT(token)
+  
+  if (authErrors.includes(message)) {
+    console.log('jwt not valid', message)
+    return await updateToken()
+  }
+  
   return `Bearer ${authKey.uniq_trade_token}`
 }
 
@@ -121,7 +152,12 @@ const getParams = async (token_data = '')=> {
 
     const response = await new Promise((resolve, reject) => {
       request(options, (error, response) => {
-        if (error) reject(error);
+        if (error) {
+          console.log('reject response brands')
+          reject(error)
+        };
+        console.log(response?.statusCode)
+        console.log(response?.statusMessage)
         const res = JSON.parse(response.body)
         resolve(res);
       });
@@ -156,12 +192,12 @@ const requestPriceList = async (brands = [], token_data = '')=> {
         'Content-Type': 'application/json',
         'Authorization': token
       },
-      body: {
+      body: JSON.stringify({
         "brandsId": brands,
         "format":"json",
         "utrArticle":false,
         "inStock":true
-      }
+      })
     };
 
     const response = await new Promise((resolve, reject) => {
@@ -287,7 +323,6 @@ const main = async () => {
     console.log('getPriceLists', token)
     // git price list
     const pricelist = await getPriceList(token)
-    console.log('getPriceList', pricelist?.length) 
 
     if (pricelist?.length > 0) {
       const res = await db.Part.destroy({where: {}})
@@ -297,6 +332,7 @@ const main = async () => {
         await db.Part.create(price[i])
       }
       console.log('delete table', res)
+      console.log('getPriceList', pricelist?.length) 
     } else {
       throw new Error('Произошла ошибка в получении прайс листа')
     }
@@ -305,6 +341,121 @@ const main = async () => {
   }
 }
 
+//for router
+const search = async (query, withInfo = 0, token_data) => {
+  try {
+    let token = token_data
+    if (!token_data) {
+      token = await getToken()
+    }
+
+    const options = {
+      method: 'GET',
+      url: `search/${query}?info=${withInfo}`,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': token
+      }
+    };
+
+    const response = await new Promise((resolve, reject) => {
+      request(options, (error, response) => {
+        if (error) reject(error);
+        const res = JSON.parse(response.body)
+        resolve(res);
+      });
+    });
+    
+    return response
+  } catch (error) {
+    if (authErrors.includes(error?.response?.data?.message)) {
+      console.log(error?.response?.data);
+      const token = await updateToken()
+      return search(query, withInfo, token)
+    } else {
+      console.log('Произошла ошибка:', error.message);
+      console.log('Произошла ошибка data:', error?.response?.data);
+    }
+  }
+}
+const searchList = async (list, token_data) => {
+  try {
+    let token = token_data
+    if (!token_data) {
+      token = await getToken()
+    }
+
+    var data = JSON.stringify({"details": list})
+
+    const options = {
+      method: 'POST',
+      url: 'https://order24-api.utr.ua/api/search',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': token
+      },
+      body: data
+    };
+
+    const response = await new Promise((resolve, reject) => {
+      request(options, (error, response) => {
+        if (error) reject(error);
+        const res = JSON.parse(response.body)
+        resolve(res);
+      });
+    });
+
+    return response
+  } catch (error) {
+    if (authErrors.includes(error?.response?.data?.message)) {
+      console.log(error?.response?.data);
+      const token = await updateToken()
+      return searchList(list, token)
+    } else {
+      console.log('Произошла ошибка:', error.message);
+      console.log('Произошла ошибка data:', error?.response?.data);
+    }
+  }
+}
+
+const analogs = async (brand, article)  => {
+  try {
+    const token = await getToken()
+
+    const options = {
+      method: 'GET',
+      url: `analogs/${brand}/${article}`,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': token
+      }
+    };
+
+    const response = await new Promise((resolve, reject) => {
+      request(options, (error, response) => {
+        if (error) reject(error);
+        const res = JSON.parse(response.body)
+        resolve(res);
+      });
+    });
+  
+    return response
+  } catch (error) {
+    if (authErrors.includes(error?.response?.data?.message)) {
+      console.log(error?.response?.data);
+      await updateToken()
+      return analogs(brand, article)
+    } else {
+      console.log('Произошла ошибка:', error.message);
+      console.log('Произошла ошибка data:', error?.response?.data);
+    }
+  }
+}
+
+
 module.exports = {
-  main
+  main,
+  analogs,
+  search,
+  searchList
 }
