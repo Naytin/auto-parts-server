@@ -3,7 +3,7 @@ const cors = require('cors');
 const app = express();
 const bodyParser = require('body-parser')
 const routes = require('./routes')
-const {initialize} = require('./postgresql')
+// const {initialize} = require('./postgresql')
 const PORT = process.env.PORT || 8081;
 // Конфигурация подключения к базе данных
 
@@ -13,7 +13,7 @@ app.use(bodyParser.json())
 
 app.use('/', routes); 
 //init database 
-initialize()
+// initialize()
 
 // Запуск сервера
 app.listen(8081, () => {

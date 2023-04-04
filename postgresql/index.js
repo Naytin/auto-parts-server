@@ -11,9 +11,9 @@ const models = [Part, Order, Reviews, Settings, User, TreeTranslate];
 
 let db = {};
 // Create a new instance of Sequelize
-
+initialize()
 async function initialize() {
-  if (Object.keys(db).length === 0) {
+  console.log('initialize DB')
     const sequelize = new Sequelize(
     {
       database: "root",
@@ -45,13 +45,9 @@ async function initialize() {
   
     db.sequelize = sequelize;
     db.Sequelize = Sequelize;
-  } else {
-    console.log('database exist');
-  }
 }
 
 // Export the database instance and models
 module.exports = {
-  db,
-  initialize,
+  db
 };
