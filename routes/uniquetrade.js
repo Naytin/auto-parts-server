@@ -8,8 +8,8 @@ router.post('/api/uniqueTrade/search', async (req, res) => {
 
     const response = await search(query, withInfo)
   
-    if (response?.status === 200) {
-      res.status(200).json(response.data.details)
+    if (response) {
+      res.status(200).json(response?.details)
     } else {
       res.status(404).json({ error: 'Нічого не знайдено'})
     }
@@ -24,8 +24,8 @@ router.post('/api/uniqueTrade/analogs', async (req, res) => {
     const {brand, article} = req.body
     const response = await analogs(brand, article)
   
-    if (response?.status === 200) {
-      res.status(200).json(response.data)
+    if (response) {
+      res.status(200).json(response)
     } else {
       res.status(404).json({ error: 'Нічого не знайдено'})
     }

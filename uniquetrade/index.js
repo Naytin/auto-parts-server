@@ -1,35 +1,8 @@
 const {db} = require('../postgresql')
+const {token_data} = require('./config')
+const {prepareParts, timeout, checkExpiration} = require('../utils')
+const {authErrors} = require('../consts')
 const request = require('request')
-const authErrors = ['JWT Token not found', 'Invalid JWT Token', 'Expired JWT Token', 'Unauthorized']
-const timeout = async (time) =>  await new Promise(r => setTimeout(r, time));
-
-const prepareParts = (parts) => {
-  return parts.map(p => {
-    const { 
-      "Артикул": article,
-      "Наименование": title,
-      "Бренд": brand,
-      "Валюта": currency,
-      "Цена": price,
-      ...rest
-    } = p;
-
-    return {
-      article,
-      title,
-      brand,
-      currency,
-      price,
-      remainsAll: {...rest}
-    }
-  })
-  
-}
-const token_id = {
-  "refresh_token": "a7d9f33162704f4bce54d38a2ca27fbe699e459fefdf83b3858165101340f68a692d9806f27f7f280f5c8ff8da4d165e14012ce7c4d604406c5d533fc9f8f85e",
-  "browser_fingerprint": "cb6a784884cef585b514a76f3509118a"
-}
-const token_data = JSON.stringify(token_id);
 
 const checkJWT = async (token) => {
   try {
@@ -78,15 +51,6 @@ const refresh_token = async () => {
   } catch (error) {
     console.log(error)
   }
-}
-
-const checkExpiration = (dateString) => {
-  if (!dateString) return false
-  const date = new Date(dateString);
-  const oneHourAgo = new Date(date.getTime());
-  oneHourAgo.setHours(date.getHours() - 1);
-
-  return oneHourAgo > new Date();
 }
 
 const updateToken = async () => {
@@ -351,7 +315,7 @@ const search = async (query, withInfo = 0, token_data) => {
 
     const options = {
       method: 'GET',
-      url: `search/${query}?info=${withInfo}`,
+      url: `https://order24-api.utr.ua/api/search/${query}?info=${withInfo}`,
       headers: {
         'Content-Type': 'application/json',
         'Authorization': token
@@ -424,7 +388,7 @@ const analogs = async (brand, article)  => {
 
     const options = {
       method: 'GET',
-      url: `analogs/${brand}/${article}`,
+      url: `https://order24-api.utr.ua/api/analogs/${brand}/${article}`,
       headers: {
         'Content-Type': 'application/json',
         'Authorization': token

@@ -2,29 +2,9 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../mysql')
 const {db} = require('../postgresql')
+const {filterPartByExist} = require('../utils')
 const {searchList} = require('../uniquetrade')
 const  {Op} = require('sequelize');
-
-const IDS = [21,35]
-const filterPartByExist = (part) => {
-  //makes filter by remains, it means availability product
-  if (part.remains && part.remains.length > 0) {
-    const toOrder = Boolean(part.remains?.find(r => IDS.includes(r?.storage?.id)))
-    const availability = Boolean(part.remains?.find(r => !IDS.includes(r?.storage?.id)))
-
-    let {id,brand,article,title,yourPrice,images, remains, remainsAll} = part
-    images = images?.map(img => ({fullImagePath: img.fullImagePath})).filter((_,i) => i === 0) || []
-
-    return {id,brand,article,title,yourPrice,images, availability, toOrder,remainsAll: remainsAll || [], remains}
-  } else {
-    let {id,brand,article,title,yourPrice,images, remainsAll, remains} = part
-    images = images?.map((img) => ({fullImagePath: img.fullImagePath})).filter((_,i) => i === 0) || []
-    const toOrder = Boolean(part.remainsAll?.find(r => IDS.includes(r?.storage?.id)))
-    const availability = Boolean(part.remainsAll?.find(r => !IDS.includes(r?.storage?.id) && Number(r.remain) !== 0))
-    
-    return {id,brand,article,title, yourPrice, images, availability, toOrder, remainsAll: remainsAll || [], remains}
-  }
-}
 
 router.post('/api/parts', async (req, res) => {
   try {
@@ -84,14 +64,14 @@ router.post('/api/parts', async (req, res) => {
       }
     })
     const parts = p.map(part => {
-      const current = details.find(d => d)
+      const current = details.find(d => d?.article === part.article)
       const {id, yourPrice, images, availability, toOrder,remainsAll, remains} = current
 
       return {
         ...part.dataValues,
         brand: {name: part.brand},
-        yourPrice: {amount: Number(part.price)},
-        yourPrice2: yourPrice,
+        yourPrice: yourPrice,
+        yourPrice2: {amount: Number(part.price)},
         images: images || [],
         remainsAll_2: {...part.remainsAll},
         remainsAll: remainsAll || [],
