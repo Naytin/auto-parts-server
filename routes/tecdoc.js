@@ -12,7 +12,7 @@ router.get('/api/test', async (req, res) => {
 });
 
 router.get('/api/model2', async (req, res) => {
-  try {
+  try { 
     const model = req.query.model;
     const [rows] = await pool.execute(`
       SELECT id, description, manufacturerid FROM models

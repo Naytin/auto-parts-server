@@ -7,8 +7,8 @@ const  {Op} = require('sequelize');
 router.post('/api/parts', async (req, res) => {
   try {
     const {modificationId, categoryId, brands, manufacturerid} = req.body;
-    console.log('parts', modificationId)
-    if (!modificationId || !categoryId || !manufacturerid || brands.length === 0) return []
+    
+    if (!modificationId || !categoryId || !manufacturerid || brands.length === 0) res.status(500).send('Не все параметры переданы для поиска запчастей');
     const ids = Array.from(new Set(brands))
     const questionMarks = ids.map(() => "?").join(",");
 
@@ -22,7 +22,6 @@ router.post('/api/parts', async (req, res) => {
           AND article_links.linkageid = ?
           AND suppliers.description IN (${questionMarks})
           `, [modificationId, categoryId, modificationId, ...ids]);
-    // const rows = await tecdocApi.categoryArticle(categoryId,modificationId, brands)
 
     const supplierId = rows.map(s => s?.supplierid)
     const supplierNumbers = rows.map(s => s?.datasupplierarticlenumber)
@@ -39,7 +38,6 @@ router.post('/api/parts', async (req, res) => {
           AND article_oe.supplierid IN (${questionMarks})
           AND article_oe.datasupplierarticlenumber IN (${questionMarkNumbers}) 
         GROUP BY OENbr_clr`, [manufacturerid, ...supplierId, ...supplierNumbers]);
-      // const rows = await tecdocApi.originArticles(manufacturerid,supplierId, supplierNumbers)
       
       originalArticles = rows.map(a => a?.OENbr_clr)
     }

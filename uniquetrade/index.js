@@ -1,5 +1,4 @@
 const {db} = require('../postgresql')
-const cron = require('node-cron');
 const request = require('request')
 const authErrors = ['JWT Token not found', 'Invalid JWT Token', 'Expired JWT Token']
 const timeout = async (time) =>  await new Promise(r => setTimeout(r, time));
@@ -273,18 +272,17 @@ const main = async () => {
   try {
     await timeout(18000)
     console.log('init main')
-    // await refresh_token()
     //get params
-    // const brands = await getParams()
-    // if (!brands) throw new Error('Произошла ошибка получения брендов')
+    const brands = await getParams()
+    if (!brands) throw new Error('Произошла ошибка получения брендов')
     console.log('brands')
     //request for price list
-    // const id = await requestPriceList(brands)
-    // if (!id) throw new Error('Произошла ошибка в запросе на прайс лист')
+    const id = await requestPriceList(brands)
+    if (!id) throw new Error('Произошла ошибка в запросе на прайс лист')
     console.log('requestPriceList')
     //get token of price list
-    // await timeout(18000)
-    const token = await getPriceLists(649344)
+    await timeout(18000)
+    const token = await getPriceLists(id)
     if (!token) throw new Error('Произошла ошибка в получении токена прайс листа')
     console.log('getPriceLists', token)
     // git price list
@@ -300,25 +298,13 @@ const main = async () => {
       }
       console.log('delete table', res)
     } else {
-      throw new Error('Произошла ошибка в получении прас листа')
+      throw new Error('Произошла ошибка в получении прайс листа')
     }
   } catch (error) {
     throw error
   }
 }
 
-const cronJob = () => {
-  cron.schedule('0 0 * * *', async () => {
-    try {
-      main()
-      console.log('Данные успешно сохранены в БД');
-    } catch (error) {
-      console.error('Ошибка при выполнении задачи:', error);
-    }
-  });
-}
-
 module.exports = {
-  main,
-  cronJob
+  main
 }
