@@ -5,7 +5,163 @@ const {db} = require('../postgresql')
 const {filterPartByExist} = require('../utils')
 const {searchList} = require('../uniquetrade')
 const  {Op} = require('sequelize');
+const order = require('../postgresql/resolvers/order')
+const reviews = require('../postgresql/resolvers/reviews')
+const tree = require('../postgresql/resolvers/tree')
+const user = require('../postgresql/resolvers/user')
 
+// orders - start
+router.post('/api/db/order', async (req, res) => {
+  try {
+    const id = await order.createOrder(req.body.field)
+        
+    if (id) {
+      res.status(200).json({
+        error: false,
+        message: `Замовлення успішно створене. Номер замовлення - ${id}`
+      })
+    } else {
+      res.status(200).json({
+        error: true,
+        message: `Сталося помилка - спробуйте ще раз`,
+      })
+    }
+  } catch (error) {
+    res.status(500).send('Ошибка сервера');
+  }
+})
+router.get('/api/db/order', async (req, res) => {
+  try {
+    const orders = await order.Orders()
+       
+    if (orders) {
+      res.status(200).json(orders)
+    } else {
+      res.status(200).json({
+        error: true,
+        message: `Сталося помилка отримання замовлень`,
+      })
+    }
+  } catch (error) {
+    res.status(500).send('Ошибка сервера');
+  }
+})
+router.put('/api/db/order', async (req, res) => {
+  try {
+    const orders = await order.ChangeStatus(req.body.field)
+    
+    if (orders) {
+      res.status(200).json({
+        error: false,
+        message: `Статус успішно змінено - ${req.body.field.id}`
+      })
+    } else {
+      res.status(200).json({
+        error: true,
+        message: `Сталося помилка зміни статуса`,
+      })
+    }
+  } catch (error) {
+    res.status(500).send('Ошибка сервера');
+  }
+})
+// orders - end
+//
+// reviews - start
+router.post('/api/db/reviews', async (req, res) => {
+  try {
+    const review = await reviews.createReview(req.body.field)
+    if (review) {
+      res.status(200).json({
+        error: false,
+        message: 'Відгук успішно додано'
+      })
+    } else {
+      res.status(200).json({
+        error: true,
+        message: 'Сталося помилка - спробуйте ще раз'
+      })
+    }
+  } catch (error) {
+    res.status(500).send('Ошибка сервера');
+  }
+})
+router.get('/api/db/reviews', async (req, res) => {
+  try {
+    const review = await reviews.getReviews()
+
+    if (review) {
+      res.status(200).json(review)
+    } else {
+      res.status(200).json({
+        error: true,
+        message: 'Сталося помилка - спробуйте ще раз'
+      })
+    }
+  } catch (error) {
+    res.status(500).send('Ошибка сервера');
+  }
+})
+// reviews - end
+// 
+// tree - start
+router.put('/api/db/tree', async (req, res) => {
+  try {
+    const treeError = await tree.updateTreeError(req.body)
+
+    if (treeError) {
+      res.status(200).json({
+        error: false,
+        message: 'категорію успішно додано'
+      })
+    } else {
+      res.status(200).json({
+        error: true,
+        message: 'Сталося помилка - спробуйте ще раз'
+      })
+    }
+  } catch (error) {
+    res.status(500).send('Ошибка сервера');
+  }
+})
+router.get('/api/db/tree', async (req, res) => {
+  try {
+    const treeTranslate = await tree.getTreeTranslate()
+
+    if (treeTranslate) {
+      res.status(200).json(treeTranslate)
+    } else {
+      res.status(200).json({
+        error: true,
+        message: 'Сталося помилка - спробуйте ще раз'
+      })
+    }
+  } catch (error) {
+    res.status(500).send('Ошибка сервера');
+  }
+})
+// tree - end
+//
+// user - start
+router.get('/api/db/user', async (req, res) => {
+  try {
+    const users = await user.Users()
+
+    if (users) {
+      res.status(200).json(users)
+    } else {
+      res.status(200).json({
+        error: true,
+        message: `Сталося помилка отримання користувачів`,
+      })
+    }
+  } catch (error) {
+    res.status(500).send('Ошибка сервера');
+  }
+})
+// user - end
+//
+// get parts
 router.post('/api/parts', async (req, res) => {
   try {
     const {modificationId, categoryId, brands, manufacturerid} = req.body;
@@ -63,6 +219,7 @@ router.post('/api/parts', async (req, res) => {
         return filterPartByExist({...p.details[0]})
       }
     })
+    //prepare parts with details
     const parts = p.map(part => {
       const current = details.find(d => d?.article === part.article)
       const {id, yourPrice, images, availability, toOrder,remainsAll, remains} = current

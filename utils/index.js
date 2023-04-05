@@ -21,6 +21,18 @@ const filterPartByExist = (part) => {
   }
 }
 
+const passwordGenerator = () => {
+  let letters = "abcdefghijklmnopqrstuvwxyz0123456789";
+  let password = "";
+
+  for (let i = 0; i < 8; i++) {
+    let generate = letters[Math.floor(Math.random() * 36)];
+    password += generate;
+  }
+
+  return password
+}
+
 const checkExpiration = (dateString) => {
   if (!dateString) return false
   const date = new Date(dateString);
@@ -56,5 +68,6 @@ module.exports = {
   prepareParts,
   filterPartByExist,
   timeout,
-  checkExpiration
+  checkExpiration,
+  passwordGenerator
 }
