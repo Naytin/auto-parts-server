@@ -105,6 +105,25 @@ router.get('/api/db/reviews', async (req, res) => {
 // reviews - end
 // 
 // tree - start
+router.post('/api/db/tree', async (req, res) => {
+  try {
+    const treeTranslate = await tree.createTreeTranslate(req.body)
+
+    if (treeTranslate) {
+      res.status(200).json({
+        error: false,
+        message: 'переклад успішно додано'
+      })
+    } else {
+      res.status(200).json({
+        error: true,
+        message: 'Сталося помилка - спробуйте ще раз'
+      })
+    }
+  } catch (error) {
+    res.status(500).send('Ошибка сервера');
+  }
+})
 router.put('/api/db/tree', async (req, res) => {
   try {
     const treeError = await tree.updateTreeError(req.body)
@@ -210,38 +229,42 @@ router.post('/api/parts', async (req, res) => {
       }
     });
 
-    const list = p.map(part => ({oem: part.article, brand: part.brand}))
-    //get details about part
-    const result = await searchList(list)
-    //prepare details
-    const details = result?.map(p => {
-      if (p?.details?.length > 0) {
-        return filterPartByExist({...p.details[0]})
-      }
-    })
-    //prepare parts with details
-    const parts = p.map(part => {
-      const current = details.find(d => d?.article === part.article)
-      const {id, yourPrice, images, availability, toOrder,remainsAll, remains} = current
+    if (p.length > 0) {
+      const list = p.map(part => ({oem: part.article, brand: part.brand}))
+      //get details about part
+      const result = await searchList(list)
+      //prepare details
+      const details = result?.map(p => {
+        if (p?.details?.length > 0) {
+          return filterPartByExist({...p.details[0]})
+        }
+      })
+      //prepare parts with details
+      const parts = p.map(part => {
+        const current = details.find(d => d?.article === part.article)
+        const {id, yourPrice, images, availability, toOrder,remainsAll, remains} = current
 
-      return {
-        ...part.dataValues,
-        brand: {name: part.brand},
-        yourPrice: yourPrice,
-        yourPrice2: {amount: Number(part.price)},
-        images: images || [],
-        remainsAll_2: {...part.remainsAll},
-        remainsAll: remainsAll || [],
-        remains,
-        id,
-        availability, 
-        toOrder,
-        remain: Object.values({...part.remainsAll}).reduce((acc, cur) =>  acc + Number(cur.replace(/\s|>|</g, '')) ,0)
-      }
-    })
-    
-    console.log('found parts', parts?.length)
-    res.json(parts);
+        return {
+          ...part.dataValues,
+          brand: {name: part.brand},
+          yourPrice: yourPrice,
+          yourPrice2: {amount: Number(part.price)},
+          images: images || [],
+          remainsAll_2: {...part.remainsAll},
+          remainsAll: remainsAll || [],
+          remains,
+          id,
+          availability, 
+          toOrder,
+          remain: Object.values({...part.remainsAll}).reduce((acc, cur) =>  acc + Number(cur.replace(/\s|>|</g, '')) ,0)
+        }
+      })
+      
+      console.log('found parts', parts?.length)
+      res.json(parts);
+    } else {
+      res.json(p);
+    }
   } catch (err) {
     console.error(err);
     res.status(500).send('Ошибка сервера');

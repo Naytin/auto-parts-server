@@ -382,6 +382,44 @@ const searchList = async (list, token_data) => {
   }
 }
 
+const applicability = async (id, token_data) => {
+  try {
+    let token = token_data
+    if (!token_data) {
+      token = await getToken()
+    }
+
+    const options = {
+      method: 'GET',
+      url: `https://order24-api.utr.ua/api/applicability/${id}`,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': token
+      },
+
+    };
+
+    const response = await new Promise((resolve, reject) => {
+      request(options, (error, response) => {
+        if (error) reject(error);
+        const res = JSON.parse(response.body)
+        resolve(res);
+      });
+    });
+
+    return response
+  } catch (error) {
+    if (authErrors.includes(error?.response?.data?.message)) {
+      console.log(error?.response?.data);
+      const token = await updateToken()
+      return applicability(id, token)
+    } else {
+      console.log('Произошла ошибка:', error.message);
+      console.log('Произошла ошибка data:', error?.response?.data);
+    }
+  }
+}
+
 const analogs = async (brand, article)  => {
   try {
     const token = await getToken()
@@ -421,5 +459,6 @@ module.exports = {
   main,
   analogs,
   search,
-  searchList
+  searchList,
+  applicability
 }

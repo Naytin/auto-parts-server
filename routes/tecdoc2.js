@@ -2,90 +2,106 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../mysql')
 
-router.get('/api/tables', async (req, res) => {
+
+router.get('/api/models222', async (req, res) => {
   try {
+    const mark = req.query.mark;
+    const year = req.query.year;
+    const [rows] = await pool.execute(`SELECT DISTINCT models.id, models.description, models.constructioninterval 
+      FROM models
+      INNER JOIN passanger_cars ON models.id = passanger_cars.modelid
+      INNER JOIN passanger_car_attributes ON passanger_cars.id = passanger_car_attributes.passangercarid
+      WHERE models.manufacturerid = ?
+      AND passanger_car_attributes.displayvalue IN ('Фургон', 'автобус', 'вэн', 'Фургон/универсал', 'Самосвал', 'Автомобиль для нужд коммунальног', 'тягач')`, [mark]);
+      
+    res.json(rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send(err);
+  }
+});
+
+router.get('/api/models22', async (req, res) => {
+  try {
+    const mark = req.query.mark;
+    const year = req.query.year;
+    const [rows] = await pool.execute(`SELECT DISTINCT models.id, models.description, models.constructioninterval 
+      FROM models
+      INNER JOIN passanger_cars ON models.id = passanger_cars.modelid
+      INNER JOIN passanger_car_attributes ON passanger_cars.id = passanger_car_attributes.passangercarid
+      WHERE models.manufacturerid = ?
+      AND (
+        SUBSTRING(passanger_cars.constructioninterval, -4) = ?
+        OR SUBSTRING_INDEX(passanger_cars.constructioninterval, ' - ', 1) LIKE ?
+        OR SUBSTRING_INDEX(passanger_cars.constructioninterval, ' - ', -1) LIKE ?
+      )
+      AND passanger_car_attributes.displayvalue IN ('Фургон', 'автобус', 'вэн', 'Фургон/универсал', 'Самосвал', 'Автомобиль для нужд коммунальног', 'тягач')`, [mark, year, `%.${year}`, `%.${year}`]);
+      
+    res.json(rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send(err);
+  }
+});
+router.get('/api/engines3', async (req, res) => {
+  try {
+    const model = req.query.model;
+    const year = req.query.year;
     const [rows] = await pool.execute(`
-      SELECT table_name, column_name
-      FROM information_schema.columns
-      WHERE table_schema = DATABASE();
-    `);
-      
-    const result = rows.reduce((acc, {table_name, column_name}) => {
-      if (!acc[table_name]) {
-        acc[table_name] = {fields: [column_name]};
-      } else {
-        acc[table_name].fields.push(column_name);
-      }
-      return acc;
-    }, {});
-
-    res.json(result);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send(err);
-  }
-});
-router.get('/api/table', async (req, res) => {
-  try {
-    const id = req.query.id;
-    const field = req.query.field;
-    const table = req.query.table;
-    const [rows] = await pool.execute(`SELECT *
-    FROM ${table}
-    WHERE ${field} = ? LIMIT 1000`, [id]);
+    SELECT DISTINCT passanger_cars.id, passanger_cars.description,passanger_cars.fulldescription, 
+    passanger_cars.constructioninterval, passanger_cars.modelid, passanger_car_attributes.displayvalue
+    FROM passanger_cars
+    INNER JOIN passanger_car_attributes ON passanger_cars.id = passanger_car_attributes.passangercarid
+    WHERE passanger_cars.modelid = ?
+    AND SUBSTRING(passanger_cars.constructioninterval, -4) >= ?
+    AND passanger_car_attributes.attributetype = "FuelType"`, [model, year]);
       
     res.json(rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send(err);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Ошибка сервера');
   }
 });
-router.get('/api/article_images_2018q2', async (req, res) => {
+router.get('/api/engines2', async (req, res) => {
   try {
-    const id = req.query.id;
-    const field = req.query.field;
-    const [rows] = await pool.execute(`SELECT *
-    FROM article_images_2018q2 
-    WHERE ${field} = ? LIMIT 100`, [id]);
+    const model = req.query.model;
+    const year = req.query.year;
+    const [rows] = await pool.execute(`
+    SELECT DISTINCT passanger_cars.id, passanger_cars.description,passanger_cars.fulldescription, 
+    passanger_cars.constructioninterval, passanger_cars.modelid, passanger_car_attributes.displayvalue
+    FROM passanger_cars
+    INNER JOIN passanger_car_attributes ON passanger_cars.id = passanger_car_attributes.passangercarid
+    WHERE passanger_cars.modelid = ?
+    AND (
+      (SUBSTRING(passanger_cars.constructioninterval, -4) = ?)
+      OR (SUBSTRING_INDEX(passanger_cars.constructioninterval, ' - ', 1) BETWEEN 1980 AND ?)
+      OR (SUBSTRING_INDEX(passanger_cars.constructioninterval, ' - ', -1) BETWEEN 1980 AND ?)
+    )
+    AND passanger_car_attributes.attributetype = "FuelType"`, [model, year, `%.${year}`, `%.${year}`]);
       
     res.json(rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send(err);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Ошибка сервера');
   }
 });
-router.get('/api/article_images_old', async (req, res) => {
+router.post('/api/engines22', async (req, res) => {
   try {
-    const id = req.query.id;
-    const field = req.query.field;
-    const [rows] = await pool.execute(`SELECT *
-    FROM article_images_old 
-    WHERE ${field} = ? LIMIT 100`, [id]);
+    const {model, year} = req.body
+    const [rows] = await pool.execute(`
+    SELECT DISTINCT passanger_cars.id, passanger_cars.description,passanger_cars.fulldescription, 
+    passanger_cars.constructioninterval, passanger_cars.modelid, passanger_car_attributes.displayvalue
+    FROM passanger_cars
+    INNER JOIN passanger_car_attributes ON passanger_cars.id = passanger_car_attributes.passangercarid
+    WHERE passanger_cars.modelid = ?
+    AND passanger_car_attributes.attributetype = "FuelType"`, [model]);
       
     res.json(rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send(err);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Ошибка сервера');
   }
 });
-
-router.get('/api/images', async (req, res) => {
-  try {
-    const id = req.query.id;
-    const field = req.query.field;
-    const [rows] = await pool.execute(`SELECT *
-    FROM article_images 
-    WHERE ${field} = ? LIMIT 100`, [id]);
-      
-    res.json(rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send(err);
-  }
-});
-
-
-
 router.get('/api/test', async (req, res) => {
   try {
     res.json('Тестовый запрос');
@@ -108,6 +124,7 @@ router.get('/api/model2', async (req, res) => {
     res.status(500).send('Ошибка сервера');
   }
 });
+
 router.post('/api/model', async (req, res) => {
   try {
     const {model} = req.body;
@@ -135,15 +152,28 @@ router.post('/api/models', async (req, res) => {
       INNER JOIN passanger_car_attributes ON passanger_cars.id = passanger_car_attributes.passangercarid
       WHERE models.manufacturerid = ?
       AND (
-        YEAR(STR_TO_DATE(SUBSTRING_INDEX(passanger_cars.constructioninterval, ' - ', 1), '%m.%Y')) <= ?
-        AND (
-          YEAR(STR_TO_DATE(SUBSTRING_INDEX(passanger_cars.constructioninterval, ' - ', -1), '%m.%Y')) >= ?
-          OR SUBSTRING_INDEX(passanger_cars.constructioninterval, ' - ', -1) = ''
-        )
-        OR SUBSTRING_INDEX(passanger_cars.constructioninterval, ' - ', -1) = ?
+        (SUBSTRING(passanger_cars.constructioninterval, -4) = ?)
+        OR (SUBSTRING_INDEX(passanger_cars.constructioninterval, ' - ', 1) BETWEEN 1980 AND ?)
+        OR (SUBSTRING_INDEX(passanger_cars.constructioninterval, ' - ', -1) BETWEEN 1980 AND ?)
       )
-      AND passanger_car_attributes.displayvalue IN ('Фургон', 'автобус', 'вэн', 'Фургон/универсал', 'Самосвал', 'Автомобиль для нужд коммунальног', 'тягач')`, [mark, year, year, year]);
-      
+      AND passanger_car_attributes.displayvalue IN ('Фургон', 'автобус', 'вэн', 'Фургон/универсал', 'Самосвал', 'Автомобиль для нужд коммунальног', 'тягач')`, [mark, year]);
+    res.json(rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send(err);
+  }
+});
+
+router.post('/api/models2', async (req, res) => {
+  try {
+    const {mark, year} = req.body;
+    const [rows] = await pool.execute(`SELECT DISTINCT models.id, models.description, models.constructioninterval 
+      FROM models
+      INNER JOIN passanger_cars ON models.id = passanger_cars.modelid
+      INNER JOIN passanger_car_attributes ON passanger_cars.id = passanger_car_attributes.passangercarid
+      WHERE models.manufacturerid = ?
+      AND passanger_car_attributes.displayvalue IN ('Фургон', 'автобус', 'вэн', 'Фургон/универсал', 'Самосвал', 'Автомобиль для нужд коммунальног', 'тягач')`, [mark]);
+
     res.json(rows);
   } catch (err) {
     console.error(err);
@@ -156,7 +186,7 @@ router.post('/api/modification', async (req, res) => {
     const {modification} = req.body
     console.log('query', modification)
     const [rows] = await pool.execute(`
-    SELECT DISTINCT passanger_cars.id, passanger_cars.description,passanger_cars.fulldescription, passanger_cars.constructioninterval, passanger_cars.modelid, passanger_car_attributes.displayvalue
+    SELECT DISTINCT passanger_cars.id, passanger_cars.description,passanger_cars.fulldescription, passanger_cars.constructioninterval, passanger_cars.mo>
     FROM passanger_cars
     INNER JOIN passanger_car_attributes ON passanger_cars.id = passanger_car_attributes.passangercarid
     WHERE passanger_cars.id = ?
@@ -171,31 +201,6 @@ router.post('/api/modification', async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).send('Ошибка сервера');
-  }
-});
-
-router.get('/api/detail', async (req, res) => {
-  try {
-    const id = req.query.id;
-    const [rows] = await pool.execute(`SELECT description,displaytitle,displayvalue
-    FROM article_attributes 
-    WHERE DataSupplierArticleNumber = ?`, [id]);
-      
-    if (rows.length > 0) {
-      const detail = rows.map(d => ({
-        attribute: {
-          name: d?.displaytitle,
-          title: d?.description
-        },
-        value: d?.displayvalue
-      }))
-      res.json(detail);
-    } else {
-      res.json([]);
-    }
-  } catch (err) {
-    console.error(err);
-    res.status(500).send(err);
   }
 });
 
@@ -264,14 +269,11 @@ router.post('/api/engines', async (req, res) => {
     INNER JOIN passanger_car_attributes ON passanger_cars.id = passanger_car_attributes.passangercarid
     WHERE passanger_cars.modelid = ?
     AND (
-      YEAR(STR_TO_DATE(SUBSTRING_INDEX(passanger_cars.constructioninterval, ' - ', 1), '%m.%Y')) <= ?
-      AND (
-        YEAR(STR_TO_DATE(SUBSTRING_INDEX(passanger_cars.constructioninterval, ' - ', -1), '%m.%Y')) >= ?
-        OR SUBSTRING_INDEX(passanger_cars.constructioninterval, ' - ', -1) = ''
-      )
-      OR SUBSTRING_INDEX(passanger_cars.constructioninterval, ' - ', -1) = ?
+      (SUBSTRING(passanger_cars.constructioninterval, -4) = ?)
+      OR (SUBSTRING_INDEX(passanger_cars.constructioninterval, ' - ', 1) BETWEEN 1980 AND ?)
+      OR (SUBSTRING_INDEX(passanger_cars.constructioninterval, ' - ', -1) BETWEEN 1980 AND ?)
     )
-    AND passanger_car_attributes.attributetype = "FuelType"`, [model, year, year, year]);
+    AND passanger_car_attributes.attributetype = "FuelType"`, [model, year, `%.${year}`, `%.${year}`]);
       
     res.json(rows);
   } catch (error) {
