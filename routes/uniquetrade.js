@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const {search,analogs, applicability} = require('../uniquetrade')
-
+const {photos} = require('../mysql/actions')
 
 router.post('/api/uniqueTrade/applicability', async (req, res) => {
   try {
@@ -40,9 +40,17 @@ router.post('/api/uniqueTrade/analogs', async (req, res) => {
   try {
     const {brand, article} = req.body
     const response = await analogs(brand, article)
-  
+    
     if (response) {
-      res.status(200).json(response)
+      const ids = response.map(a => a.article)
+      const imgs = await photos(ids)
+      const analogs = response.map(a => {
+        const img = imgs.find(i => i.DataSupplierArticleNumber === a.article)
+        const images = img?.FileName ? [{fullImagePath: `${WEBP_URL}/${img.FileName}`}]: []
+
+        return {...a, images}
+      })
+      res.status(200).json(analogs)
     } else {
       res.status(404).json({ error: 'Нічого не знайдено'})
     }

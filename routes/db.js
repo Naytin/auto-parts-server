@@ -3,7 +3,8 @@ const router = express.Router();
 const pool = require('../mysql')
 const {db} = require('../postgresql')
 const {filterPartByExist} = require('../utils')
-const {WEBP_URL, IMAGE_URL} = require('../consts')
+const {WEBP_URL} = require('../consts')
+const {photos, articles, articles_original} = require('../mysql/actions')
 const {searchList} = require('../uniquetrade')
 const  {Op} = require('sequelize');
 const order = require('../postgresql/resolvers/order')
@@ -187,19 +188,8 @@ router.post('/api/parts', async (req, res) => {
     const {modificationId, categoryId, brands, manufacturerid} = req.body;
     
     if (!modificationId || !categoryId || !manufacturerid || brands.length === 0) res.status(500).send('Не все параметры переданы для поиска запчастей');
-    const ids = Array.from(new Set(brands))
-    const questionMarks = ids.map(() => "?").join(",");
-
-    const [rows] = await pool.execute(`
-      SELECT DISTINCT article_links.supplierid, article_links.datasupplierarticlenumber, suppliers.description
-      FROM passanger_car_pds 
-      INNER JOIN article_links ON passanger_car_pds.productid = article_links.productid 
-      INNER JOIN suppliers ON article_links.supplierid = suppliers.id
-      WHERE passanger_car_pds.passangercarid = ? 
-          AND passanger_car_pds.nodeid = ? 
-          AND article_links.linkageid = ?
-          AND suppliers.description IN (${questionMarks})
-          `, [modificationId, categoryId, modificationId, ...ids]);
+   
+    const rows = await articles(brands,modificationId,categoryId)
 
     const supplierId = rows.map(s => s?.supplierid)
     const supplierNumbers = rows.map(s => s?.datasupplierarticlenumber)
@@ -207,15 +197,7 @@ router.post('/api/parts', async (req, res) => {
     let originalArticles = []
 
     if (supplierId.length > 0) {
-      const questionMarks = supplierId.map(() => "?").join(",");
-      const questionMarkNumbers = supplierNumbers.map(() => "?").join(",");
-
-      const [rows] = await pool.execute(`
-        SELECT article_oe.OENbr_clr FROM article_oe 
-        WHERE article_oe.manufacturerId = ? 
-          AND article_oe.supplierid IN (${questionMarks})
-          AND article_oe.datasupplierarticlenumber IN (${questionMarkNumbers}) 
-        GROUP BY OENbr_clr`, [manufacturerid, ...supplierId, ...supplierNumbers]);
+      const rows = await articles_original(supplierId, supplierNumbers, manufacturerid)
       
       originalArticles = rows.map(a => a?.OENbr_clr)
     }
@@ -233,10 +215,7 @@ router.post('/api/parts', async (req, res) => {
     if (p.length > 0) {
       //get images 
       const ids = p.map(part => part.article)
-      const questionMarks = ids.map(() => "?").join(",");
-      const [rows] = await pool.execute(`SELECT FileName,supplierId,DataSupplierArticleNumber
-        FROM article_images 
-        WHERE DataSupplierArticleNumber IN (${questionMarks})`, [ids]);
+      const rows = await photos(ids)
         
       const list = p.map(part => ({oem: part.article, brand: part.brand}))
       //get details about part

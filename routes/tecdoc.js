@@ -204,17 +204,22 @@ router.get('/api/detail', async (req, res) => {
 router.post('/api/category', async (req, res) => {
   try {
     const {modification, category} = req.body
-    //AND LOWER(REGEXP_REPLACE(description, '[,/-]', '-')) LIKE ?
     const [rows] = await pool.execute(`SELECT * FROM passanger_car_trees
     WHERE passangercarid = ? 
-    AND LOWER(REGEXP_REPLACE(description, '[\\s,./)(]+', '-', 'g)) LIKE ?`, [modification, `${category}`]);
+    AND LOWER(REGEXP_REPLACE(description, '[,/-]', '-')) LIKE ?`, [modification, `%${category}%`]);
+
+    // const [rows] = await pool.execute(`
+    //   SELECT * FROM passanger_car_trees
+    //   WHERE passangercarid = ? 
+    //   AND LOWER(REGEXP_REPLACE(REPLACE(description, '/', ''), '[\\s,./)(]+', '-', 'g')) LIKE ?
+    // `, [modification, `%${category}%`]);
 
     if (rows.length > 0) {
       res.json(rows[0]);
      } else {
       res.json([]);
      }
-  } catch (error) {
+  } catch (err) {
     console.error(err);
     res.status(500).send('Ошибка сервера');
   }
@@ -239,7 +244,7 @@ router.post('/api/categoryArticles', async (req, res) => {
         `, [modificationId, categoryId, modificationId, ...ids]);
       
         res.json(rows);
-  } catch (error) {
+  } catch (err) {
     console.error(err);
     res.status(500).send('Ошибка сервера');
   }
@@ -251,7 +256,7 @@ router.post('/api/tree', async (req, res) => {
     const [rows] = await pool.execute('SELECT passangercarid,id,parentid,description FROM passanger_car_trees WHERE passangercarid = ?', [modification]);
       
     res.json(rows);
-  } catch (error) {
+   } catch (err) {
     console.error(err);
     res.status(500).send('Ошибка сервера');
   }
@@ -277,7 +282,7 @@ router.post('/api/engines', async (req, res) => {
     AND passanger_car_attributes.attributetype = "FuelType"`, [model, year, year, year]);
       
     res.json(rows);
-  } catch (error) {
+  } catch (err) {
     console.error(err);
     res.status(500).send('Ошибка сервера');
   }
@@ -297,7 +302,7 @@ router.post('/api/originalArticles', async (req, res) => {
     GROUP BY OENbr_clr`, [mark, ...supplierId, ...supplierNumber]);
       
     res.json(rows);
-  } catch (error) {
+  } catch (err) {
     console.error(err);
     res.status(500).send('Ошибка сервера');
   }
@@ -317,7 +322,7 @@ router.post('/api/brands', async (req, res) => {
     AND suppliers.description IN (${questionMarks})`, [modificationId, ...ids]);
       
     res.json(rows);
-  } catch (error) {
+  } catch (err) {
     console.error(err);
     res.status(500).send('Ошибка сервера');
   }
