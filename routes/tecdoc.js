@@ -177,12 +177,14 @@ router.post('/api/modification', async (req, res) => {
 router.get('/api/detail', async (req, res) => {
   try {
     const id = req.query.id;
-    const [rows] = await pool.execute(`SELECT description,displaytitle,displayvalue
-    FROM article_attributes 
-    WHERE DataSupplierArticleNumber = ?`, [id]);
+    const [rows] = await pool.execute(`SELECT article_attributes.description,article_attributes.displaytitle, article_attributes.displayvalue, article_attributes.datasupplierarticlenumber
+    FROM articles
+    INNER JOIN article_attributes ON articles.supplierId = article_attributes.supplierid 
+    WHERE articles.DataSupplierArticleNumber = ?`, [id]);
       
     if (rows.length > 0) {
-      const detail = rows.map(d => ({
+      const filtered = rows.filter(d => d.datasupplierarticlenumber === id)
+      const detail = filtered.map(d => ({
         attribute: {
           name: d?.displaytitle,
           title: d?.description
@@ -202,9 +204,10 @@ router.get('/api/detail', async (req, res) => {
 router.post('/api/category', async (req, res) => {
   try {
     const {modification, category} = req.body
+    //AND LOWER(REGEXP_REPLACE(description, '[,/-]', '-')) LIKE ?
     const [rows] = await pool.execute(`SELECT * FROM passanger_car_trees
     WHERE passangercarid = ? 
-    AND LOWER(REGEXP_REPLACE(description, '[,/-]', '')) LIKE ?`, [modification, `%${category}%`]);
+    AND LOWER(REGEXP_REPLACE(description, '[\\s,./)(]+', '-', 'g)) LIKE ?`, [modification, `${category}`]);
 
     if (rows.length > 0) {
       res.json(rows[0]);

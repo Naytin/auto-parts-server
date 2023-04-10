@@ -3,7 +3,7 @@ const router = express.Router();
 const {search,analogs, applicability} = require('../uniquetrade')
 
 
-router.get('/api/uniqueTrade/applicability', async (req, res) => {
+router.post('/api/uniqueTrade/applicability', async (req, res) => {
   try {
     const {query} = req.body;
 

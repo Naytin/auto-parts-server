@@ -3,6 +3,7 @@ const router = express.Router();
 const pool = require('../mysql')
 const {db} = require('../postgresql')
 const {filterPartByExist} = require('../utils')
+const {WEBP_URL, IMAGE_URL} = require('../consts')
 const {searchList} = require('../uniquetrade')
 const  {Op} = require('sequelize');
 const order = require('../postgresql/resolvers/order')
@@ -220,7 +221,7 @@ router.post('/api/parts', async (req, res) => {
     }
 
     const articles = [...categoryArticles, ...originalArticles]
-
+    
     const p = await db.Part.findAll({
       where: {
         article: {
@@ -230,6 +231,13 @@ router.post('/api/parts', async (req, res) => {
     });
 
     if (p.length > 0) {
+      //get images 
+      const ids = p.map(part => part.article)
+      const questionMarks = ids.map(() => "?").join(",");
+      const [rows] = await pool.execute(`SELECT FileName,supplierId,DataSupplierArticleNumber
+        FROM article_images 
+        WHERE DataSupplierArticleNumber IN (${questionMarks})`, [ids]);
+        
       const list = p.map(part => ({oem: part.article, brand: part.brand}))
       //get details about part
       const result = await searchList(list)
@@ -241,15 +249,17 @@ router.post('/api/parts', async (req, res) => {
       })
       //prepare parts with details
       const parts = p.map(part => {
+        const img = rows.find(i => i.DataSupplierArticleNumber === part.article)
+        const images = img?.FileName ? [{fullImagePath: `${WEBP_URL}/${img.FileName}`}]: []
         const current = details.find(d => d?.article === part.article)
-        const {id, yourPrice, images, availability, toOrder,remainsAll, remains} = current
+        const {id, yourPrice, availability, toOrder,remainsAll, remains} = current
 
         return {
           ...part.dataValues,
           brand: {name: part.brand},
           yourPrice: yourPrice,
           yourPrice2: {amount: Number(part.price)},
-          images: images || [],
+          images: images,
           remainsAll_2: {...part.remainsAll},
           remainsAll: remainsAll || [],
           remains,
