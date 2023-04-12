@@ -2,6 +2,52 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../mysql')
 
+router.get('/api/category', async (req, res) => {
+  try {
+    const modification = req.query.modification;
+    const category = req.query.category;
+
+    const [rows] = await pool.execute(`SELECT * FROM passanger_car_trees
+    WHERE passangercarid = ? 
+    AND LOWER(REGEXP_REPLACE(description, '[,/-]', '-')) LIKE ?`, [modification, `%${category}%`]);
+    if (rows.length > 0) {
+      res.json(rows[0]);
+     } else {
+      res.json([]);
+     }
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Ошибка сервера');
+  }
+});
+
+router.get('/api/detail2', async (req, res) => {
+  try {
+    const id = req.query.id;
+    const brand = req.query.brand;
+    const [rows] = await pool.execute(`
+    SELECT article_attributes.description,
+      article_attributes.displaytitle, 
+      article_attributes.displayvalue, 
+      article_attributes.datasupplierarticlenumber,
+      article_attributes.supplierid,
+      suppliers.description AS brand
+    FROM articles
+    INNER JOIN suppliers ON suppliers.description = ? 
+    INNER JOIN article_attributes ON suppliers.id = article_attributes.supplierid 
+      AND articles.DataSupplierArticleNumber = article_attributes.datasupplierarticlenumber 
+    WHERE 
+      articles.DataSupplierArticleNumber = ?
+      OR articles.FoundString = ?
+    `, [brand, id, id]);
+      
+    res.json(rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send(err);
+  }
+});
+
 router.get('/api/tables', async (req, res) => {
   try {
     const [rows] = await pool.execute(`
@@ -40,34 +86,7 @@ router.get('/api/table', async (req, res) => {
     res.status(500).send(err);
   }
 });
-router.get('/api/article_images_2018q2', async (req, res) => {
-  try {
-    const id = req.query.id;
-    const field = req.query.field;
-    const [rows] = await pool.execute(`SELECT *
-    FROM article_images_2018q2 
-    WHERE ${field} = ? LIMIT 100`, [id]);
-      
-    res.json(rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send(err);
-  }
-});
-router.get('/api/article_images_old', async (req, res) => {
-  try {
-    const id = req.query.id;
-    const field = req.query.field;
-    const [rows] = await pool.execute(`SELECT *
-    FROM article_images_old 
-    WHERE ${field} = ? LIMIT 100`, [id]);
-      
-    res.json(rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send(err);
-  }
-});
+
 
 router.get('/api/images', async (req, res) => {
   try {
@@ -207,12 +226,6 @@ router.post('/api/category', async (req, res) => {
     const [rows] = await pool.execute(`SELECT * FROM passanger_car_trees
     WHERE passangercarid = ? 
     AND LOWER(REGEXP_REPLACE(description, '[,/-]', '-')) LIKE ?`, [modification, `%${category}%`]);
-
-    // const [rows] = await pool.execute(`
-    //   SELECT * FROM passanger_car_trees
-    //   WHERE passangercarid = ? 
-    //   AND LOWER(REGEXP_REPLACE(REPLACE(description, '/', ''), '[\\s,./)(]+', '-', 'g')) LIKE ?
-    // `, [modification, `%${category}%`]);
 
     if (rows.length > 0) {
       res.json(rows[0]);

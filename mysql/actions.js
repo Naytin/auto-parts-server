@@ -1,3 +1,5 @@
+const pool = require('./')
+
 const articles = async (brands, modificationId, categoryId) => {
   try {
     const ids = Array.from(new Set(brands))

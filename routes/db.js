@@ -202,12 +202,12 @@ router.post('/api/parts', async (req, res) => {
       originalArticles = rows.map(a => a?.OENbr_clr)
     }
 
-    const articles = [...categoryArticles, ...originalArticles]
+    const all_articles = [...categoryArticles, ...originalArticles]
     
     const p = await db.Part.findAll({
       where: {
         article: {
-          [Op.in]: articles
+          [Op.in]: all_articles
         }
       }
     });

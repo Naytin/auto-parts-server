@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const {search,analogs, applicability} = require('../uniquetrade')
 const {photos} = require('../mysql/actions')
+const {WEBP_URL} = require('../consts')
 
 router.post('/api/uniqueTrade/applicability', async (req, res) => {
   try {
@@ -45,7 +46,7 @@ router.post('/api/uniqueTrade/analogs', async (req, res) => {
       const ids = response.map(a => a.article)
       const imgs = await photos(ids)
       const analogs = response.map(a => {
-        const img = imgs.find(i => i.DataSupplierArticleNumber === a.article)
+        const img = imgs?.find(i => i.DataSupplierArticleNumber === a.article)
         const images = img?.FileName ? [{fullImagePath: `${WEBP_URL}/${img.FileName}`}]: []
 
         return {...a, images}
