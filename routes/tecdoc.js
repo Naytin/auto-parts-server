@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const pool = require('../mysql')
+const {detail} = require('../mysql/actions')
 
 router.get('/api/category', async (req, res) => {
   try {
@@ -196,24 +197,10 @@ router.post('/api/modification', async (req, res) => {
 router.get('/api/detail', async (req, res) => {
   try {
     const id = req.query.id;
-    const [rows] = await pool.execute(`SELECT article_attributes.description,article_attributes.displaytitle, article_attributes.displayvalue, article_attributes.datasupplierarticlenumber
-    FROM articles
-    INNER JOIN article_attributes ON articles.supplierId = article_attributes.supplierid 
-    WHERE articles.DataSupplierArticleNumber = ?`, [id]);
-      
-    if (rows.length > 0) {
-      const filtered = rows.filter(d => d.datasupplierarticlenumber === id)
-      const detail = filtered.map(d => ({
-        attribute: {
-          name: d?.displaytitle,
-          title: d?.description
-        },
-        value: d?.displayvalue
-      }))
-      res.json(detail);
-    } else {
-      res.json([]);
-    }
+    const brand = req.query.brand;
+    const response = await detail(id, brand)
+    
+    res.json(response);
   } catch (err) {
     console.error(err);
     res.status(500).send(err);

@@ -194,6 +194,7 @@ router.post('/api/parts', async (req, res) => {
     const supplierId = rows.map(s => s?.supplierid)
     const supplierNumbers = rows.map(s => s?.datasupplierarticlenumber)
     const categoryArticles = rows?.map(a => a?.datasupplierarticlenumber)
+    const brand = rows?.map(a => a?.description)
     let originalArticles = []
 
     if (supplierId.length > 0) {
@@ -207,7 +208,10 @@ router.post('/api/parts', async (req, res) => {
     const p = await db.Part.findAll({
       where: {
         article: {
-          [Op.in]: all_articles
+          [Op.in]: categoryArticles
+        },
+        brand: {
+          [Op.in]: brand
         }
       }
     });
@@ -215,36 +219,38 @@ router.post('/api/parts', async (req, res) => {
     if (p.length > 0) {
       //get images 
       const ids = p.map(part => part.article)
-      const rows = await photos(ids)
+      const brands = p.map(part => part.brand.name)
+      const rows = await photos(ids, brands)
         
       const list = p.map(part => ({oem: part.article, brand: part.brand}))
       //get details about part
-      const result = await searchList(list)
+      // const result = await searchList(list)
       //prepare details
-      const details = result?.map(p => {
-        if (p?.details?.length > 0) {
-          return filterPartByExist({...p.details[0]})
-        }
-      })
+      // const details = result?.map(p => {
+      //   if (p?.details?.length > 0) {
+      //     return filterPartByExist({...p.details[0]})
+      //   }
+      // })
       //prepare parts with details
       const parts = p.map(part => {
-        const img = rows.find(i => i.DataSupplierArticleNumber === part.article)
-        const images = img?.FileName ? [{fullImagePath: `${WEBP_URL}/${img.FileName}`}]: []
-        const current = details.find(d => d?.article === part.article)
-        const {id, yourPrice, availability, toOrder,remainsAll, remains} = current
+        const img = rows?.filter(i => i.DataSupplierArticleNumber === part.article && i.description === part.brand)
+        const images = img?.length > 0 ? img.map(im =>  ({fullImagePath: `${WEBP_URL}/${im.FileName}`})) : []
+        // const images = img?.FileName ? [{fullImagePath: `${WEBP_URL}/${img.FileName}`}]: []
+        // const current = details.find(d => d?.article === part.article)
+        // const {id, yourPrice, availability, toOrder,remainsAll, remains} = current
 
         return {
           ...part.dataValues,
           brand: {name: part.brand},
-          yourPrice: yourPrice,
-          yourPrice2: {amount: Number(part.price)},
+          // yourPrice: yourPrice,
+          yourPrice: {amount: Number(part.price)},
           images: images,
-          remainsAll_2: {...part.remainsAll},
-          remainsAll: remainsAll || [],
-          remains,
-          id,
-          availability, 
-          toOrder,
+          remainsAll: {...part.remainsAll},
+          // remainsAll: remainsAll || [],
+          // remains,
+          // id,
+          // availability, 
+          // toOrder,
           remain: Object.values({...part.remainsAll}).reduce((acc, cur) =>  acc + Number(cur.replace(/\s|>|</g, '')) ,0)
         }
       })

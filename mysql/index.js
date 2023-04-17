@@ -3,7 +3,7 @@ const mysql = require('mysql2/promise');
 // Конфигурация подключения к базе данных
 const config = {
   host: 'mytecdoc.com',
-  user: 'td_test_ip',
+  user: 'vsebus_shop',
   password: 'pG7aQ6hG3l',
   database: 'tecdoc_2022_2_ru',
   connectionLimit: 10,

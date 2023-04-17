@@ -40,12 +40,20 @@ const articles_original = async (supplierId, supplierNumbers, manufacturerid) =>
   }
 }
 
-const photos = async (ids) => {
+const photos = async (ids, brands) => {
   try {
     const questionMarks = ids.map(() => "?").join(",");
-    const [rows] = await pool.execute(`SELECT FileName,supplierId,DataSupplierArticleNumber
-      FROM article_images 
-      WHERE DataSupplierArticleNumber IN (${questionMarks})`, [...ids]);
+    const questionMarksBrands = brands.map(() => "?").join(",");
+    // const [rows] = await pool.execute(`SELECT FileName,supplierId,DataSupplierArticleNumber
+    //   FROM article_images 
+    //   WHERE DataSupplierArticleNumber IN (${questionMarks})`, [...ids]);
+
+    const [rows] = await pool.execute(`SELECT article_images.DataSupplierArticleNumber, article_images.supplierId, article_images.PictureName
+    , article_images.FileName
+    FROM articles
+    INNER JOIN suppliers ON articles.supplierId = suppliers.id and suppliers.description IN (${questionMarksBrands})
+    INNER JOIN article_images ON articles.supplierId = article_images.supplierid  AND article_images.DataSupplierArticleNumber = articles.DataSupplierArticleNumber
+    where articles.DataSupplierArticleNumber IN (${questionMarks}) or FoundString IN (${questionMarks}) group by FileName`, [...brands, ...ids, ...ids]);
 
     return rows;
   } catch (error) {
@@ -53,9 +61,40 @@ const photos = async (ids) => {
   }
 }
 
+const detail = async (id, brand) => {
+  try {
+    const [rows] = await pool.execute(`SELECT articles.DataSupplierArticleNumber, articles.supplierId, suppliers.description as brand
+    , article_attributes.description, article_attributes.displaytitle, article_attributes.displayvalue
+    FROM articles
+    INNER JOIN suppliers ON articles.supplierId = suppliers.id and suppliers.description = ?
+    INNER JOIN article_attributes ON articles.supplierId = article_attributes.supplierid  AND article_attributes.DataSupplierArticleNumber = articles.DataSupplierArticleNumber
+    where articles.DataSupplierArticleNumber = ? or FoundString = ?`, [brand, id, id]);
+      
+    if (rows.length > 0) {
+      const detail = rows.map(d => ({
+        attribute: {
+          name: d?.displaytitle,
+          title: d?.description
+        },
+        value: d?.displayvalue,
+        article: d.DataSupplierArticleNumber,
+        brand: d?.brand
+      }))
+
+      return detail;
+    } else {
+      return []
+    }
+  } catch (error) {
+    
+  }
+}
+
+
 
 module.exports = {
   articles,
   articles_original,
-  photos
+  photos,
+  detail
 }
