@@ -3,7 +3,7 @@ const router = express.Router();
 const pool = require('../mysql')
 const {db} = require('../postgresql')
 const {filterPartByExist} = require('../utils')
-const {WEBP_URL} = require('../consts')
+const {WEBP_URL, BRANDS_CHANGE} = require('../consts')
 const {photos, articles, articles_original} = require('../mysql/actions')
 const {searchList} = require('../uniquetrade')
 const  {Op} = require('sequelize');
@@ -219,7 +219,7 @@ router.post('/api/parts', async (req, res) => {
     if (p.length > 0) {
       //get images 
       const ids = p.map(part => part.article)
-      const brands = p.map(part => part.brand.name)
+      const brands = p.map(part => BRANDS_CHANGE[part.brand] || part.brand)
       const rows = await photos(ids, brands)
         
       const list = p.map(part => ({oem: part.article, brand: part.brand}))
@@ -233,19 +233,20 @@ router.post('/api/parts', async (req, res) => {
       // })
       //prepare parts with details
       const parts = p.map(part => {
-        const img = rows?.filter(i => i.DataSupplierArticleNumber === part.article && i.description === part.brand)
+        const brand = BRANDS_CHANGE[part.brand] || part.brand
+        const img = rows?.filter(i => i.DataSupplierArticleNumber.replace(/\s|\//g, '') === part.article.replace(/\s|\//g, '') && i.brand === brand)
         const images = img?.length > 0 ? img.map(im =>  ({fullImagePath: `${WEBP_URL}/${im.FileName}`})) : []
         // const images = img?.FileName ? [{fullImagePath: `${WEBP_URL}/${img.FileName}`}]: []
         // const current = details.find(d => d?.article === part.article)
         // const {id, yourPrice, availability, toOrder,remainsAll, remains} = current
-
+        //{storage: {id: number, name: string, originalName: string}, remain: string}[]
         return {
           ...part.dataValues,
           brand: {name: part.brand},
           // yourPrice: yourPrice,
           yourPrice: {amount: Number(part.price)},
           images: images,
-          remainsAll: {...part.remainsAll},
+          remainsAll: Object.entries(part.remainsAll).map(([key, value]) => ({storage: {name: key}, remain: value})),
           // remainsAll: remainsAll || [],
           // remains,
           // id,

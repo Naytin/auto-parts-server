@@ -49,12 +49,12 @@ const photos = async (ids, brands) => {
     //   WHERE DataSupplierArticleNumber IN (${questionMarks})`, [...ids]);
 
     const [rows] = await pool.execute(`SELECT article_images.DataSupplierArticleNumber, article_images.supplierId, article_images.PictureName
-    , article_images.FileName
+    , article_images.FileName,suppliers.description as brand
     FROM articles
     INNER JOIN suppliers ON articles.supplierId = suppliers.id and suppliers.description IN (${questionMarksBrands})
     INNER JOIN article_images ON articles.supplierId = article_images.supplierid  AND article_images.DataSupplierArticleNumber = articles.DataSupplierArticleNumber
     where articles.DataSupplierArticleNumber IN (${questionMarks}) or FoundString IN (${questionMarks}) group by FileName`, [...brands, ...ids, ...ids]);
-
+    
     return rows;
   } catch (error) {
     

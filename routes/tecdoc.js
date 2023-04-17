@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const pool = require('../mysql')
-const {detail} = require('../mysql/actions')
+const {detail, photos} = require('../mysql/actions')
 
 router.get('/api/category', async (req, res) => {
   try {
@@ -89,22 +89,16 @@ router.get('/api/table', async (req, res) => {
 });
 
 
-router.get('/api/images', async (req, res) => {
+router.post('/api/images', async (req, res) => {
   try {
-    const id = req.query.id;
-    const field = req.query.field;
-    const [rows] = await pool.execute(`SELECT *
-    FROM article_images 
-    WHERE ${field} = ? LIMIT 100`, [id]);
-      
+    const {id, brands} = req.body;
+    const rows = await photos(id, brands)
     res.json(rows);
   } catch (err) {
     console.error(err);
     res.status(500).send(err);
   }
 });
-
-
 
 router.get('/api/test', async (req, res) => {
   try {
