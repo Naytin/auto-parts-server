@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const pool = require('../mysql')
+const {BRANDS_CHANGE} = require('../consts')
+
 const {detail, photos} = require('../mysql/actions')
 
 router.get('/api/category', async (req, res) => {
@@ -192,7 +194,7 @@ router.get('/api/detail', async (req, res) => {
   try {
     const id = req.query.id;
     const brand = req.query.brand;
-    const response = await detail(id, brand)
+    const response = await detail(id, BRANDS_CHANGE[brand] || brand)
     
     res.json(response);
   } catch (err) {

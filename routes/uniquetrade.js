@@ -1,9 +1,34 @@
 const express = require('express');
 const router = express.Router();
-const {search,analogs, applicability} = require('../uniquetrade')
+const {search,analogs, applicability, searchList} = require('../uniquetrade')
 const {photos, detail} = require('../mysql/actions')
 const {WEBP_URL, BRANDS_CHANGE} = require('../consts')
 
+router.post('/api/uniqueTrade/searchList', async (req, res) => {
+  try {
+    const {list} = req.body;
+
+    const response = await searchList(list)
+  
+    if (Boolean(response?.length) && response[0].details?.length > 0) {
+      let part = response[0].details[0]
+  
+      const details = await detail(part.article, BRANDS_CHANGE[part.brand.name] || part.brand.name)
+      part.detailInfo = details
+    
+      const img = await photos([part.article], [BRANDS_CHANGE[part.brand.name] || part.brand.name])
+      const images = img?.length > 0 ? img.map(im =>  ({fullImagePath: `${WEBP_URL}/${im.FileName}`})) : []
+      part.images = images
+      
+      res.status(200).json(part)
+    } else {
+      res.status(200).json({})
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Ошибка сервера - searchList');
+  }
+});
 router.post('/api/uniqueTrade/applicability', async (req, res) => {
   try {
     const {query} = req.body;
@@ -39,8 +64,8 @@ router.post('/api/uniqueTrade/search', async (req, res) => {
         }
 
         if (data.length > 1 && !withInfo) {
-          const images = await photos([value.article], [BRANDS_CHANGE[value.brand.name] || value.brand.name])
-
+          const img = await photos([value.article], [BRANDS_CHANGE[value.brand.name] || value.brand.name])
+          const images = img?.length > 0 ? img.map(im =>  ({fullImagePath: `${WEBP_URL}/${im.FileName}`})) : []
           data[index].images = images
         }
       }

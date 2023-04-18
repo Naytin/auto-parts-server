@@ -2,8 +2,8 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../mysql')
 const {db} = require('../postgresql')
-const {filterPartByExist} = require('../utils')
-const {WEBP_URL, BRANDS_CHANGE} = require('../consts')
+const {filterPartByExist, addPercent} = require('../utils')
+const {WEBP_URL, BRANDS_CHANGE, margin_percentage} = require('../consts')
 const {photos, articles, articles_original} = require('../mysql/actions')
 const {searchList} = require('../uniquetrade')
 const  {Op} = require('sequelize');
@@ -244,7 +244,7 @@ router.post('/api/parts', async (req, res) => {
           ...part.dataValues,
           brand: {name: part.brand},
           // yourPrice: yourPrice,
-          yourPrice: {amount: Number(part.price)},
+          yourPrice: {amount: addPercent(part.price, margin_percentage)},
           images: images,
           remainsAll: Object.entries(part.remainsAll).map(([key, value]) => ({storage: {name: key}, remain: value})),
           // remainsAll: remainsAll || [],

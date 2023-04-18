@@ -32,6 +32,11 @@ const passwordGenerator = () => {
 
   return password
 }
+export const addPercent = (sum, PERCENT) => {
+  if (!sum) return 0
+  
+  return Number((((PERCENT / 100) * sum) + sum).toFixed(0))
+}
 
 const checkExpiration = (dateString) => {
   if (!dateString) return false
