@@ -1,0 +1,2282 @@
+[
+  {
+      "name": "ADRIAUTO",
+      "externalCode": "00001"
+  },
+  {
+      "name": "AIRTEX",
+      "externalCode": "00002"
+  },
+  {
+      "name": "BOSAL",
+      "externalCode": "00006"
+  },
+  {
+      "name": "BOSCH",
+      "externalCode": "00007"
+  },
+  {
+      "name": "CASTROL",
+      "externalCode": "00008"
+  },
+  {
+      "name": "CHAMPION",
+      "externalCode": "00009"
+  },
+  {
+      "name": "FACET",
+      "externalCode": "00010"
+  },
+  {
+      "name": "DEPO",
+      "externalCode": "00012"
+  },
+  {
+      "name": "FORD",
+      "externalCode": "00015"
+  },
+  {
+      "name": "GLYCO",
+      "externalCode": "00016"
+  },
+  {
+      "name": "GOETZE",
+      "externalCode": "00017"
+  },
+  {
+      "name": "HART",
+      "externalCode": "00018"
+  },
+  {
+      "name": "BOGE",
+      "externalCode": "00020"
+  },
+  {
+      "name": "IRB",
+      "externalCode": "00021"
+  },
+  {
+      "name": "KYB",
+      "externalCode": "00024"
+  },
+  {
+      "name": "LOBRO",
+      "externalCode": "00026"
+  },
+  {
+      "name": "LOCTITE",
+      "externalCode": "00027"
+  },
+  {
+      "name": "LUXOIL",
+      "externalCode": "00028"
+  },
+  {
+      "name": "MOBIL",
+      "externalCode": "00031"
+  },
+  {
+      "name": "MOOG",
+      "externalCode": "00032"
+  },
+  {
+      "name": "NISSENS",
+      "externalCode": "00034"
+  },
+  {
+      "name": "OPTIMAL",
+      "externalCode": "00036"
+  },
+  {
+      "name": "PAGID",
+      "externalCode": "00037"
+  },
+  {
+      "name": "PYRMO",
+      "externalCode": "00039"
+  },
+  {
+      "name": "QH",
+      "externalCode": "00040"
+  },
+  {
+      "name": "ROMIX",
+      "externalCode": "00042"
+  },
+  {
+      "name": "SIFFERT",
+      "externalCode": "00046"
+  },
+  {
+      "name": "K-FLEX",
+      "externalCode": "00047"
+  },
+  {
+      "name": "TRW",
+      "externalCode": "00049"
+  },
+  {
+      "name": "VERNET",
+      "externalCode": "00050"
+  },
+  {
+      "name": "WAHLER",
+      "externalCode": "00052"
+  },
+  {
+      "name": "WYNN'S",
+      "externalCode": "00053"
+  },
+  {
+      "name": "4MAX",
+      "externalCode": "00067"
+  },
+  {
+      "name": "ADLER",
+      "externalCode": "00070"
+  },
+  {
+      "name": "AE",
+      "externalCode": "00071"
+  },
+  {
+      "name": "AJUSA",
+      "externalCode": "00072"
+  },
+  {
+      "name": "AISIN",
+      "externalCode": "00073"
+  },
+  {
+      "name": "AKUSAN",
+      "externalCode": "00074"
+  },
+  {
+      "name": "ASMET",
+      "externalCode": "00078"
+  },
+  {
+      "name": "ATE",
+      "externalCode": "00079"
+  },
+  {
+      "name": "BERU",
+      "externalCode": "00084"
+  },
+  {
+      "name": "BREMBO",
+      "externalCode": "00086"
+  },
+  {
+      "name": "CONTI",
+      "externalCode": "00093"
+  },
+  {
+      "name": "CORTECO",
+      "externalCode": "00095"
+  },
+  {
+      "name": "DELPHI",
+      "externalCode": "00101"
+  },
+  {
+      "name": "FEBEST",
+      "externalCode": "00105"
+  },
+  {
+      "name": "FAG",
+      "externalCode": "00113"
+  },
+  {
+      "name": "FERODO",
+      "externalCode": "00115"
+  },
+  {
+      "name": "WIX FILTERS",
+      "externalCode": "00116"
+  },
+  {
+      "name": "FISCHER",
+      "externalCode": "00118"
+  },
+  {
+      "name": "FRECCIA",
+      "externalCode": "00123"
+  },
+  {
+      "name": "GLASER",
+      "externalCode": "00129"
+  },
+  {
+      "name": "GMB",
+      "externalCode": "00130"
+  },
+  {
+      "name": "GOMET",
+      "externalCode": "00131"
+  },
+  {
+      "name": "HANS PRIES",
+      "externalCode": "00135"
+  },
+  {
+      "name": "HEPU",
+      "externalCode": "00138"
+  },
+  {
+      "name": "INA",
+      "externalCode": "00146"
+  },
+  {
+      "name": "JAPAN CARS",
+      "externalCode": "00150"
+  },
+  {
+      "name": "LEART",
+      "externalCode": "00160"
+  },
+  {
+      "name": "LEMFORDER",
+      "externalCode": "00162"
+  },
+  {
+      "name": "LESJOFORS",
+      "externalCode": "00163"
+  },
+  {
+      "name": "LPR",
+      "externalCode": "00166"
+  },
+  {
+      "name": "MAGNETI MARELLI",
+      "externalCode": "00168"
+  },
+  {
+      "name": "MAHLE ORIGINAL",
+      "externalCode": "00169"
+  },
+  {
+      "name": "MAHLE ORIGINAL",
+      "externalCode": "00170"
+  },
+  {
+      "name": "METELLI",
+      "externalCode": "00176"
+  },
+  {
+      "name": "NGK",
+      "externalCode": "00183"
+  },
+  {
+      "name": "NIPPARTS",
+      "externalCode": "00184"
+  },
+  {
+      "name": "OCAP",
+      "externalCode": "00185"
+  },
+  {
+      "name": "BMW",
+      "externalCode": "00191"
+  },
+  {
+      "name": "VAG",
+      "externalCode": "00254"
+  },
+  {
+      "name": "PETERS",
+      "externalCode": "00267"
+  },
+  {
+      "name": "PIERBURG",
+      "externalCode": "00268"
+  },
+  {
+      "name": "REMSA",
+      "externalCode": "00280"
+  },
+  {
+      "name": "SACHS",
+      "externalCode": "00283"
+  },
+  {
+      "name": "SASIC",
+      "externalCode": "00286"
+  },
+  {
+      "name": "SKF",
+      "externalCode": "00291"
+  },
+  {
+      "name": "NTN-SNR",
+      "externalCode": "00292"
+  },
+  {
+      "name": "SOFIMA",
+      "externalCode": "00293"
+  },
+  {
+      "name": "TESH",
+      "externalCode": "00303"
+  },
+  {
+      "name": "TEXTAR",
+      "externalCode": "00305"
+  },
+  {
+      "name": "DELPHI",
+      "externalCode": "00309"
+  },
+  {
+      "name": "VALEO",
+      "externalCode": "00310"
+  },
+  {
+      "name": "WUZETEM",
+      "externalCode": "00314"
+  },
+  {
+      "name": "LUK",
+      "externalCode": "00317"
+  },
+  {
+      "name": "OSRAM",
+      "externalCode": "00318"
+  },
+  {
+      "name": "FEBI",
+      "externalCode": "01013"
+  },
+  {
+    "name": "FEBI BILSTEIN",
+    "externalCode": "01013"
+    },
+  {
+      "name": "AGA",
+      "externalCode": "01015"
+  },
+  {
+      "name": "SPIDAN",
+      "externalCode": "01017"
+  },
+  {
+      "name": "Распродажа",
+      "externalCode": "01019"
+  },
+  {
+      "name": "CX",
+      "externalCode": "01020"
+  },
+  {
+      "name": "ERT",
+      "externalCode": "01021"
+  },
+  {
+      "name": "PAYEN",
+      "externalCode": "01022"
+  },
+  {
+      "name": "MOTUL",
+      "externalCode": "01023"
+  },
+  {
+      "name": "GATES",
+      "externalCode": "01024"
+  },
+  {
+      "name": "PHILIPS",
+      "externalCode": "01025"
+  },
+  {
+      "name": "NARVA",
+      "externalCode": "01026"
+  },
+  {
+      "name": "SPECIAL OFFER",
+      "externalCode": "01027"
+  },
+  {
+      "name": "BLUE PRINT",
+      "externalCode": "01028"
+  },
+  {
+      "name": "DENSO",
+      "externalCode": "01030"
+  },
+  {
+      "name": "WAGNER",
+      "externalCode": "01031"
+  },
+  {
+      "name": "DAYCO",
+      "externalCode": "01034"
+  },
+  {
+      "name": "MANN-FILTER",
+      "externalCode": "01035"
+  },
+  {
+      "name": "DOLZ",
+      "externalCode": "01036"
+  },
+  {
+      "name": "MONROE",
+      "externalCode": "01037"
+  },
+  {
+      "name": "TEKNOROT",
+      "externalCode": "01039"
+  },
+  {
+      "name": "RUVILLE",
+      "externalCode": "01040"
+  },
+  {
+      "name": "FAE",
+      "externalCode": "01042"
+  },
+  {
+      "name": "POLMOSTROW",
+      "externalCode": "01043"
+  },
+  {
+      "name": "ELRING",
+      "externalCode": "01044"
+  },
+  {
+      "name": "CTR",
+      "externalCode": "01045"
+  },
+  {
+      "name": "TOTAL",
+      "externalCode": "01046"
+  },
+  {
+      "name": "ZF",
+      "externalCode": "01050"
+  },
+  {
+      "name": "PURFLUX",
+      "externalCode": "01052"
+  },
+  {
+      "name": "PARTS-MALL",
+      "externalCode": "01053"
+  },
+  {
+      "name": "NRF",
+      "externalCode": "01054"
+  },
+  {
+      "name": "VICTOR REINZ",
+      "externalCode": "01055"
+  },
+  {
+      "name": "VALEO PHC",
+      "externalCode": "01056"
+  },
+  {
+      "name": "MOPART",
+      "externalCode": "01059"
+  },
+  {
+      "name": "MEYLE",
+      "externalCode": "01060"
+  },
+  {
+      "name": "SANGSIN",
+      "externalCode": "01061"
+  },
+  {
+      "name": "BILSTEIN",
+      "externalCode": "01062"
+  },
+  {
+      "name": "ASAM",
+      "externalCode": "01063"
+  },
+  {
+      "name": "HSB",
+      "externalCode": "01064"
+  },
+  {
+      "name": "KOREASTAR",
+      "externalCode": "01065"
+  },
+  {
+      "name": "NURAL",
+      "externalCode": "01066"
+  },
+  {
+      "name": "GM",
+      "externalCode": "01067"
+  },
+  {
+      "name": "KAGER",
+      "externalCode": "01068"
+  },
+  {
+      "name": "TENCAR",
+      "externalCode": "01069"
+  },
+  {
+      "name": "TYG",
+      "externalCode": "01070"
+  },
+  {
+      "name": "POLCAR",
+      "externalCode": "01071"
+  },
+  {
+      "name": "KOREA",
+      "externalCode": "01072"
+  },
+  {
+      "name": "FLORIMEX",
+      "externalCode": "01073"
+  },
+  {
+      "name": "FIFFT",
+      "externalCode": "01074"
+  },
+  {
+      "name": "DP GROUP",
+      "externalCode": "01075"
+  },
+  {
+      "name": "ATEX",
+      "externalCode": "01076"
+  },
+  {
+      "name": "ARTEB",
+      "externalCode": "01077"
+  },
+  {
+      "name": "AB",
+      "externalCode": "01078"
+  },
+  {
+      "name": "TTV",
+      "externalCode": "01079"
+  },
+  {
+      "name": "SATO TECH",
+      "externalCode": "01081"
+  },
+  {
+      "name": "KOYORAD",
+      "externalCode": "01082"
+  },
+  {
+      "name": "ILJIN",
+      "externalCode": "01084"
+  },
+  {
+      "name": "TPR",
+      "externalCode": "01085"
+  },
+  {
+      "name": "TAIHO",
+      "externalCode": "01086"
+  },
+  {
+      "name": "KOLBENSCHMIDT",
+      "externalCode": "00159"
+  },
+  {
+      "name": "SHELL",
+      "externalCode": "00045"
+  },
+  {
+      "name": "ISKRA",
+      "externalCode": "00147"
+  },
+  {
+      "name": "BSG",
+      "externalCode": "01125"
+  },
+  {
+      "name": "JP GROUP",
+      "externalCode": "01126"
+  },
+  {
+      "name": "METGUM",
+      "externalCode": "01127"
+  },
+  {
+      "name": "FORMPART",
+      "externalCode": "01128"
+  },
+  {
+      "name": "SKT",
+      "externalCode": "01129"
+  },
+  {
+      "name": "TYC",
+      "externalCode": "01130"
+  },
+  {
+      "name": "EPS",
+      "externalCode": "01131"
+  },
+  {
+      "name": "COFLE",
+      "externalCode": "00091"
+  },
+  {
+      "name": "K+F",
+      "externalCode": "00153"
+  },
+  {
+      "name": "THERMOTEC",
+      "externalCode": "01089"
+  },
+  {
+      "name": "QUICK BRAKE",
+      "externalCode": "01088"
+  },
+  {
+      "name": "YAMATO",
+      "externalCode": "01090"
+  },
+  {
+      "name": "AUTOFREN",
+      "externalCode": "00004"
+  },
+  {
+      "name": "C.E.I",
+      "externalCode": "00087"
+  },
+  {
+      "name": "HELLA",
+      "externalCode": "00136"
+  },
+  {
+      "name": "TOPRAN",
+      "externalCode": "00302"
+  },
+  {
+      "name": "TEXACO",
+      "externalCode": "00304"
+  },
+  {
+      "name": "VARTA",
+      "externalCode": "00311"
+  },
+  {
+      "name": "MAGNUM TECHNOLOGY",
+      "externalCode": "01087"
+  },
+  {
+      "name": "ABE",
+      "externalCode": "01091"
+  },
+  {
+      "name": "FIAT",
+      "externalCode": "01092"
+  },
+  {
+      "name": "PEUGEOT",
+      "externalCode": "01093"
+  },
+  {
+      "name": "SKODA",
+      "externalCode": "01094"
+  },
+  {
+      "name": "TES",
+      "externalCode": "01095"
+  },
+  {
+      "name": "VW",
+      "externalCode": "01096"
+  },
+  {
+      "name": "PASCAL",
+      "externalCode": "01097"
+  },
+  {
+      "name": "CARTECHNIC",
+      "externalCode": "01098"
+  },
+  {
+      "name": "4 RIDE",
+      "externalCode": "01100"
+  },
+  {
+      "name": "EXIDE",
+      "externalCode": "01101"
+  },
+  {
+      "name": "YUASA",
+      "externalCode": "01103"
+  },
+  {
+      "name": "555",
+      "externalCode": "01104"
+  },
+  {
+      "name": "7DIESEL",
+      "externalCode": "01105"
+  },
+  {
+      "name": "BPW",
+      "externalCode": "01106"
+  },
+  {
+      "name": "LOTOS",
+      "externalCode": "01108"
+  },
+  {
+      "name": "COMMA",
+      "externalCode": "01112"
+  },
+  {
+      "name": "TITAN OIL",
+      "externalCode": "01113"
+  },
+  {
+      "name": "GULF",
+      "externalCode": "01114"
+  },
+  {
+      "name": "OPEL",
+      "externalCode": "01115"
+  },
+  {
+      "name": "TOYOTA",
+      "externalCode": "01116"
+  },
+  {
+      "name": "AKVILON",
+      "externalCode": "01117"
+  },
+  {
+      "name": "PRISTA OIL",
+      "externalCode": "01118"
+  },
+  {
+      "name": "HONDA",
+      "externalCode": "01119"
+  },
+  {
+      "name": "RWJ",
+      "externalCode": "01120"
+  },
+  {
+      "name": "NISSAN",
+      "externalCode": "01121"
+  },
+  {
+      "name": "RYMCO",
+      "externalCode": "01122"
+  },
+  {
+      "name": "MOTUL XXL",
+      "externalCode": "01123"
+  },
+  {
+      "name": "RAFINERIA W JAМLE",
+      "externalCode": "01124"
+  },
+  {
+      "name": "ELF",
+      "externalCode": "00104"
+  },
+  {
+      "name": "MAZDA",
+      "externalCode": "01137"
+  },
+  {
+      "name": "HYUNDAI",
+      "externalCode": "01138"
+  },
+  {
+      "name": "MITSUBISHI",
+      "externalCode": "01139"
+  },
+  {
+      "name": "SUBARU",
+      "externalCode": "01140"
+  },
+  {
+      "name": "BMW",
+      "externalCode": "01141"
+  },
+  {
+      "name": "SUZUKI",
+      "externalCode": "01142"
+  },
+  {
+      "name": "RENAULT",
+      "externalCode": "01143"
+  },
+  {
+      "name": "MUSASHI",
+      "externalCode": "01144"
+  },
+  {
+      "name": "MERCEDES BENZ",
+      "externalCode": "01145"
+  },
+  {
+      "name": "KIA",
+      "externalCode": "01146"
+  },
+  {
+      "name": "ISUZU",
+      "externalCode": "01147"
+  },
+  {
+      "name": "АКБ",
+      "externalCode": "00057"
+  },
+  {
+      "name": "ISTA",
+      "externalCode": "01148"
+  },
+  {
+      "name": "MEAT&DORIA",
+      "externalCode": "00172"
+  },
+  {
+      "name": "FURYA",
+      "externalCode": "01102"
+  },
+  {
+      "name": "POL",
+      "externalCode": "00038"
+  },
+  {
+      "name": "STABILUS",
+      "externalCode": "00294"
+  },
+  {
+      "name": "FA KROSNO",
+      "externalCode": "01150"
+  },
+  {
+      "name": "FPS",
+      "externalCode": "01151"
+  },
+  {
+      "name": "PETRONAS",
+      "externalCode": "01107"
+  },
+  {
+      "name": "CARGO",
+      "externalCode": "00088"
+  },
+  {
+      "name": "KLOKKERHOLM",
+      "externalCode": "00157"
+  },
+  {
+      "name": "MOBILETRON",
+      "externalCode": "00178"
+  },
+  {
+      "name": "CIFAM",
+      "externalCode": "00319"
+  },
+  {
+      "name": "FIAMM",
+      "externalCode": "01133"
+  },
+  {
+      "name": "RTS",
+      "externalCode": "01152"
+  },
+  {
+      "name": "SBS",
+      "externalCode": "01153"
+  },
+  {
+      "name": "UFI",
+      "externalCode": "01154"
+  },
+  {
+      "name": "AVA",
+      "externalCode": "01155"
+  },
+  {
+      "name": "ALKAR",
+      "externalCode": "01156"
+  },
+  {
+      "name": "ALGO",
+      "externalCode": "01157"
+  },
+  {
+      "name": "B CAR",
+      "externalCode": "01158"
+  },
+  {
+      "name": "BCGUMA",
+      "externalCode": "01159"
+  },
+  {
+      "name": "BC GUMA",
+      "externalCode": "01160"
+  },
+  {
+      "name": "TOPLITE",
+      "externalCode": "01161"
+  },
+  {
+      "name": "LKQ",
+      "externalCode": "01162"
+  },
+  {
+      "name": "ELSTOCK",
+      "externalCode": "01163"
+  },
+  {
+      "name": "ET ENGINETEAM",
+      "externalCode": "01164"
+  },
+  {
+      "name": "VECTOR",
+      "externalCode": "01166"
+  },
+  {
+      "name": "GENERAL RICAMBI",
+      "externalCode": "01167"
+  },
+  {
+      "name": "STARLINE",
+      "externalCode": "01168"
+  },
+  {
+      "name": "JURGEN LIEBISCH",
+      "externalCode": "01169"
+  },
+  {
+      "name": "MAPCO",
+      "externalCode": "01170"
+  },
+  {
+      "name": "LP BATTERY",
+      "externalCode": "01171"
+  },
+  {
+      "name": "MANDO",
+      "externalCode": "01172"
+  },
+  {
+      "name": "MIKALOR",
+      "externalCode": "01173"
+  },
+  {
+      "name": "MTS",
+      "externalCode": "01174"
+  },
+  {
+      "name": "SIEMENS VDO",
+      "externalCode": "01175"
+  },
+  {
+      "name": "SIEMENS",
+      "externalCode": "01176"
+  },
+  {
+      "name": "TAB",
+      "externalCode": "01177"
+  },
+  {
+      "name": "TECNODELTA",
+      "externalCode": "01178"
+  },
+  {
+      "name": "PIMAX",
+      "externalCode": "01179"
+  },
+  {
+      "name": "XT",
+      "externalCode": "01180"
+  },
+  {
+      "name": "ZEN",
+      "externalCode": "01181"
+  },
+  {
+      "name": "ZM",
+      "externalCode": "01182"
+  },
+  {
+      "name": "LP",
+      "externalCode": "01183"
+  },
+  {
+      "name": "FLENNOR",
+      "externalCode": "00014"
+  },
+  {
+      "name": "FRAP",
+      "externalCode": "00122"
+  },
+  {
+      "name": "CHEVROLET",
+      "externalCode": "00195"
+  },
+  {
+      "name": "A.B.S.",
+      "externalCode": "01184"
+  },
+  {
+      "name": "AVTO-GUMM",
+      "externalCode": "01185"
+  },
+  {
+      "name": "CHERY",
+      "externalCode": "01187"
+  },
+  {
+      "name": "DUCATI",
+      "externalCode": "01188"
+  },
+  {
+      "name": "HAN",
+      "externalCode": "01189"
+  },
+  {
+      "name": "MASERATI",
+      "externalCode": "01191"
+  },
+  {
+      "name": "MOTORAD",
+      "externalCode": "01193"
+  },
+  {
+      "name": "SIDEM",
+      "externalCode": "01194"
+  },
+  {
+      "name": "TATA",
+      "externalCode": "01195"
+  },
+  {
+      "name": "ВАЗ",
+      "externalCode": "01196"
+  },
+  {
+      "name": "ЗАЗ",
+      "externalCode": "01197"
+  },
+  {
+      "name": "LIQUI MOLY",
+      "externalCode": "00025"
+  },
+  {
+      "name": "CHRYSLER",
+      "externalCode": "00196"
+  },
+  {
+      "name": "AMC",
+      "externalCode": "00076"
+  },
+  {
+      "name": "GOODYEAR",
+      "externalCode": "00132"
+  },
+  {
+      "name": "DAIHATSU",
+      "externalCode": "00203"
+  },
+  {
+      "name": "JAGUAR",
+      "externalCode": "00215"
+  },
+  {
+      "name": "LAND ROVER",
+      "externalCode": "00225"
+  },
+  {
+      "name": "PORSCHE",
+      "externalCode": "00239"
+  },
+  {
+      "name": "VOLVO",
+      "externalCode": "00255"
+  },
+  {
+      "name": "TECNECO",
+      "externalCode": "00299"
+  },
+  {
+      "name": "ABT",
+      "externalCode": "01198"
+  },
+  {
+      "name": "AND",
+      "externalCode": "01199"
+  },
+  {
+      "name": "APPLUS",
+      "externalCode": "01200"
+  },
+  {
+      "name": "ASAKASHI",
+      "externalCode": "01201"
+  },
+  {
+      "name": "ASHIKA",
+      "externalCode": "01202"
+  },
+  {
+      "name": "BASF",
+      "externalCode": "01203"
+  },
+  {
+      "name": "BENSON",
+      "externalCode": "01204"
+  },
+  {
+      "name": "BENTLEY",
+      "externalCode": "01205"
+  },
+  {
+      "name": "BGA",
+      "externalCode": "01206"
+  },
+  {
+      "name": "BOGAP",
+      "externalCode": "01207"
+  },
+  {
+      "name": "BORGWARNER",
+      "externalCode": "01208"
+  },
+  {
+      "name": "BORSEHUNG",
+      "externalCode": "01209"
+  },
+  {
+      "name": "BRAVOIL",
+      "externalCode": "01210"
+  },
+  {
+      "name": "BUGIAD",
+      "externalCode": "01211"
+  },
+  {
+      "name": "CAR",
+      "externalCode": "01212"
+  },
+  {
+      "name": "CS",
+      "externalCode": "01213"
+  },
+  {
+      "name": "DELLO",
+      "externalCode": "01214"
+  },
+  {
+      "name": "DPA",
+      "externalCode": "01215"
+  },
+  {
+      "name": "DURACELL",
+      "externalCode": "01216"
+  },
+  {
+      "name": "ETF",
+      "externalCode": "01218"
+  },
+  {
+      "name": "EXXEL",
+      "externalCode": "01219"
+  },
+  {
+      "name": "FAST",
+      "externalCode": "01220"
+  },
+  {
+      "name": "FKG",
+      "externalCode": "01222"
+  },
+  {
+      "name": "GLOBAL",
+      "externalCode": "01223"
+  },
+  {
+      "name": "GREAT WALL",
+      "externalCode": "01224"
+  },
+  {
+      "name": "GSP",
+      "externalCode": "01225"
+  },
+  {
+      "name": "HELPIX",
+      "externalCode": "01226"
+  },
+  {
+      "name": "HICO",
+      "externalCode": "01227"
+  },
+  {
+      "name": "HIDRIA",
+      "externalCode": "01228"
+  },
+  {
+      "name": "HILLPORT",
+      "externalCode": "01229"
+  },
+  {
+      "name": "HOFFMAN",
+      "externalCode": "01230"
+  },
+  {
+      "name": "ICAT",
+      "externalCode": "01231"
+  },
+  {
+      "name": "JAHN",
+      "externalCode": "01232"
+  },
+  {
+      "name": "KAMPOL",
+      "externalCode": "01233"
+  },
+  {
+      "name": "KIAVOTEX",
+      "externalCode": "01234"
+  },
+  {
+      "name": "KSP",
+      "externalCode": "01235"
+  },
+  {
+      "name": "LAMBORGHINI",
+      "externalCode": "01236"
+  },
+  {
+      "name": "LIFAN",
+      "externalCode": "01237"
+  },
+  {
+      "name": "LINDO GOBEX",
+      "externalCode": "01238"
+  },
+  {
+      "name": "LOVBY",
+      "externalCode": "01239"
+  },
+  {
+      "name": "LUCAS",
+      "externalCode": "01240"
+  },
+  {
+      "name": "MAXTRAC",
+      "externalCode": "01241"
+  },
+  {
+      "name": "MISFAT",
+      "externalCode": "01242"
+  },
+  {
+      "name": "MOTORHERZ",
+      "externalCode": "01243"
+  },
+  {
+      "name": "MX",
+      "externalCode": "01244"
+  },
+  {
+      "name": "NIBK",
+      "externalCode": "01245"
+  },
+  {
+      "name": "NISHIBORU",
+      "externalCode": "01246"
+  },
+  {
+      "name": "NK",
+      "externalCode": "01247"
+  },
+  {
+      "name": "OPTIMATE",
+      "externalCode": "01248"
+  },
+  {
+      "name": "OSSCA",
+      "externalCode": "01249"
+  },
+  {
+      "name": "OXIMO",
+      "externalCode": "01250"
+  },
+  {
+      "name": "PARTMANN",
+      "externalCode": "01251"
+  },
+  {
+      "name": "PREXAPARTS",
+      "externalCode": "01253"
+  },
+  {
+      "name": "PROTECHNIC",
+      "externalCode": "01254"
+  },
+  {
+      "name": "PULLMAN",
+      "externalCode": "01255"
+  },
+  {
+      "name": "PUROLATOR",
+      "externalCode": "01256"
+  },
+  {
+      "name": "RYMAX",
+      "externalCode": "01257"
+  },
+  {
+      "name": "SAKURA",
+      "externalCode": "01258"
+  },
+  {
+      "name": "SALERI",
+      "externalCode": "01259"
+  },
+  {
+      "name": "SAT",
+      "externalCode": "01260"
+  },
+  {
+      "name": "SEINSA",
+      "externalCode": "01261"
+  },
+  {
+      "name": "SEN",
+      "externalCode": "01262"
+  },
+  {
+      "name": "SIR",
+      "externalCode": "01263"
+  },
+  {
+      "name": "SM",
+      "externalCode": "01264"
+  },
+  {
+      "name": "STINGRAY",
+      "externalCode": "01265"
+  },
+  {
+      "name": "TALOSA",
+      "externalCode": "01266"
+  },
+  {
+      "name": "TOKO",
+      "externalCode": "01267"
+  },
+  {
+      "name": "TRISCAN",
+      "externalCode": "01268"
+  },
+  {
+      "name": "TUFF SUPPORT",
+      "externalCode": "01269"
+  },
+  {
+      "name": "VIKA",
+      "externalCode": "01271"
+  },
+  {
+      "name": "VKS",
+      "externalCode": "01272"
+  },
+  {
+      "name": "WURTH",
+      "externalCode": "01273"
+  },
+  {
+      "name": "YAMAHA",
+      "externalCode": "01274"
+  },
+  {
+      "name": "ZIMMERMANN",
+      "externalCode": "01275"
+  },
+  {
+      "name": "BELTEX",
+      "externalCode": "01276"
+  },
+  {
+      "name": "COOPERSFIAAM",
+      "externalCode": "01277"
+  },
+  {
+      "name": "COOPERS",
+      "externalCode": "01278"
+  },
+  {
+      "name": "LYNX",
+      "externalCode": "01279"
+  },
+  {
+      "name": "ROADHOUSE",
+      "externalCode": "01280"
+  },
+  {
+      "name": "QT-OIL",
+      "externalCode": "01286"
+  },
+  {
+      "name": "FRICTION MASTER",
+      "externalCode": "01288"
+  },
+  {
+      "name": "OE HONDA",
+      "externalCode": "00211"
+  },
+  {
+      "name": "MERCEDES",
+      "externalCode": "01192"
+  },
+  {
+      "name": "STORM",
+      "externalCode": "01290"
+  },
+  {
+      "name": "BUICK",
+      "externalCode": "54554"
+  },
+  {
+      "name": "BEHR",
+      "externalCode": "00083"
+  },
+  {
+      "name": "TENACITY",
+      "externalCode": "01294"
+  },
+  {
+      "name": "KAVO PARTS",
+      "externalCode": "01295"
+  },
+  {
+      "name": "EP",
+      "externalCode": "01296"
+  },
+  {
+      "name": "TRC",
+      "externalCode": "01297"
+  },
+  {
+      "name": "BOSCH SERVICE",
+      "externalCode": "01292"
+  },
+  {
+      "name": "ANTONIO MASIERO",
+      "externalCode": "01299"
+  },
+  {
+      "name": "JIKIU",
+      "externalCode": "01298"
+  },
+  {
+      "name": "FIT",
+      "externalCode": "01300"
+  },
+  {
+      "name": "BAPMIC",
+      "externalCode": "01301"
+  },
+  {
+      "name": "BARUM",
+      "externalCode": "00081"
+  },
+  {
+      "name": "CONTINENTAL",
+      "externalCode": "00094"
+  },
+  {
+      "name": "DINEX",
+      "externalCode": "00102"
+  },
+  {
+      "name": "KNECHT",
+      "externalCode": "00158"
+  },
+  {
+      "name": "LEMA",
+      "externalCode": "00161"
+  },
+  {
+      "name": "SWAG",
+      "externalCode": "00295"
+  },
+  {
+      "name": "KYB",
+      "externalCode": "01041"
+  },
+  {
+      "name": "MAHLE",
+      "externalCode": "01049"
+  },
+  {
+      "name": "ORLEN",
+      "externalCode": "01111"
+  },
+  {
+      "name": "VDO",
+      "externalCode": "01270"
+  },
+  {
+      "name": "CARLIFE",
+      "externalCode": "01281"
+  },
+  {
+      "name": "PROFI",
+      "externalCode": "01284"
+  },
+  {
+      "name": "URAGAN",
+      "externalCode": "01285"
+  },
+  {
+      "name": "BI-PLAST",
+      "externalCode": "01289"
+  },
+  {
+      "name": "SH",
+      "externalCode": "00044"
+  },
+  {
+      "name": "DAEWOO",
+      "externalCode": "00099"
+  },
+  {
+      "name": "IMPERGOM",
+      "externalCode": "00145"
+  },
+  {
+      "name": "TED-GUM",
+      "externalCode": "00300"
+  },
+  {
+      "name": "TIMKEN",
+      "externalCode": "00306"
+  },
+  {
+      "name": "TRUCKTEC",
+      "externalCode": "00308"
+  },
+  {
+      "name": "ALKO",
+      "externalCode": "00003"
+  },
+  {
+      "name": "DONALDSON",
+      "externalCode": "00103"
+  },
+  {
+      "name": "ERA",
+      "externalCode": "00108"
+  },
+  {
+      "name": "KLEBER",
+      "externalCode": "00156"
+  },
+  {
+      "name": "MONARK",
+      "externalCode": "00179"
+  },
+  {
+      "name": "MOTIVE",
+      "externalCode": "00181"
+  },
+  {
+      "name": "OPTIBELT",
+      "externalCode": "00262"
+  },
+  {
+      "name": "PARADOWSCY",
+      "externalCode": "00265"
+  },
+  {
+      "name": "PIRELLI",
+      "externalCode": "00269"
+  },
+  {
+      "name": "ROULUNDS",
+      "externalCode": "00281"
+  },
+  {
+      "name": "SAF",
+      "externalCode": "00284"
+  },
+  {
+      "name": "SIL",
+      "externalCode": "00288"
+  },
+  {
+      "name": "SWF",
+      "externalCode": "00296"
+  },
+  {
+      "name": "VEMO",
+      "externalCode": "00312"
+  },
+  {
+      "name": "HANKOOK",
+      "externalCode": "01134"
+  },
+  {
+      "name": "SACHS",
+      "externalCode": "00005"
+  },
+  {
+      "name": "FINWHALE",
+      "externalCode": "99999"
+  },
+  {
+      "name": "ENZET",
+      "externalCode": "00107"
+  },
+  {
+      "name": "HENGST",
+      "externalCode": "00137"
+  },
+  {
+      "name": "KILEN",
+      "externalCode": "00154"
+  },
+  {
+      "name": "FIAT/ALFA ROMEO/LANCIA",
+      "externalCode": "01221"
+  },
+  {
+      "name": "ELIT",
+      "externalCode": "00066"
+  },
+  {
+      "name": "OE",
+      "externalCode": "00186"
+  },
+  {
+      "name": "JAPAN",
+      "externalCode": "00022"
+  },
+  {
+      "name": "IDEMITSU",
+      "externalCode": "01302"
+  },
+  {
+      "name": "TURTLE WAX",
+      "externalCode": "01303"
+  },
+  {
+      "name": "LITTLE TREES",
+      "externalCode": "01304"
+  },
+  {
+      "name": "MAXI COLOR",
+      "externalCode": "01305"
+  },
+  {
+      "name": "PRESTO",
+      "externalCode": "01306"
+  },
+  {
+      "name": "MOTIP",
+      "externalCode": "01307"
+  },
+  {
+      "name": "CITROEN",
+      "externalCode": "00197"
+  },
+  {
+      "name": "JHL",
+      "externalCode": "01308"
+  },
+  {
+      "name": "MOTUS",
+      "externalCode": "01309"
+  },
+  {
+      "name": "GEELY",
+      "externalCode": "01310"
+  },
+  {
+      "name": "BOSCH АКБ",
+      "externalCode": "01311"
+  },
+  {
+      "name": "DENCKERMANN",
+      "externalCode": "01317"
+  },
+  {
+      "name": "DPH",
+      "externalCode": "01318"
+  },
+  {
+      "name": "SIGNEDA",
+      "externalCode": "01320"
+  },
+  {
+      "name": "TEDGUM",
+      "externalCode": "01312"
+  },
+  {
+      "name": "BLIC",
+      "externalCode": "01313"
+  },
+  {
+      "name": "COVIND",
+      "externalCode": "01314"
+  },
+  {
+      "name": "MIRAGLIO",
+      "externalCode": "01315"
+  },
+  {
+      "name": "PACOL",
+      "externalCode": "01316"
+  },
+  {
+      "name": "BTA",
+      "externalCode": "01322"
+  },
+  {
+      "name": "JC PREMIUM",
+      "externalCode": "01323"
+  },
+  {
+      "name": "DT",
+      "externalCode": "01329"
+  },
+  {
+      "name": "HERTH+BUSS JAKOPARTS",
+      "externalCode": "01330"
+  },
+  {
+      "name": "THULE",
+      "externalCode": "01321"
+  },
+  {
+      "name": "3M",
+      "externalCode": "01327"
+  },
+  {
+      "name": "DACO",
+      "externalCode": "01328"
+  },
+  {
+      "name": "HUCO",
+      "externalCode": "01331"
+  },
+  {
+      "name": "HITACHI",
+      "externalCode": "01332"
+  },
+  {
+      "name": "SATO-F",
+      "externalCode": "01333"
+  },
+  {
+      "name": "SATO-A",
+      "externalCode": "01334"
+  },
+  {
+      "name": "SATO-S",
+      "externalCode": "01335"
+  },
+  {
+      "name": "SATO-C",
+      "externalCode": "01336"
+  },
+  {
+      "name": "Удаленные",
+      "externalCode": "00048"
+  },
+  {
+      "name": "Q-FIX",
+      "externalCode": "01319"
+  },
+  {
+      "name": "TOPTUL",
+      "externalCode": "01324"
+  },
+  {
+      "name": "SATO-B",
+      "externalCode": "01337"
+  },
+  {
+      "name": "ARNOTT",
+      "externalCode": "01342"
+  },
+  {
+      "name": "ASPOCK",
+      "externalCode": "01343"
+  },
+  {
+      "name": "AUGER",
+      "externalCode": "01344"
+  },
+  {
+      "name": "BERAL",
+      "externalCode": "01346"
+  },
+  {
+      "name": "BETA",
+      "externalCode": "01347"
+  },
+  {
+      "name": "BF GERMANY",
+      "externalCode": "01348"
+  },
+  {
+      "name": "BM CATALYSTS",
+      "externalCode": "01349"
+  },
+  {
+      "name": "BPART",
+      "externalCode": "01351"
+  },
+  {
+      "name": "DAF",
+      "externalCode": "01352"
+  },
+  {
+      "name": "EIBACH",
+      "externalCode": "01354"
+  },
+  {
+      "name": "AUTOTECHTEILE",
+      "externalCode": "01356"
+  },
+  {
+      "name": "CAFFARO",
+      "externalCode": "01357"
+  },
+  {
+      "name": "ELWIS ROYAL",
+      "externalCode": "01358"
+  },
+  {
+      "name": "GENERAL MOTORS",
+      "externalCode": "01359"
+  },
+  {
+      "name": "KONNER",
+      "externalCode": "01360"
+  },
+  {
+      "name": "ARIETE",
+      "externalCode": "01341"
+  },
+  {
+      "name": "BBP",
+      "externalCode": "01345"
+  },
+  {
+      "name": "DURO",
+      "externalCode": "01353"
+  },
+  {
+      "name": "FILTRON",
+      "externalCode": "01355"
+  },
+  {
+      "name": "ROADHOUSE",
+      "externalCode": "01361"
+  },
+  {
+      "name": "Тара",
+      "externalCode": "01051"
+  },
+  {
+      "name": "ALPHA FILTER",
+      "externalCode": "01362"
+  },
+  {
+      "name": "BREMI",
+      "externalCode": "01363"
+  },
+  {
+      "name": "BSP",
+      "externalCode": "01364"
+  },
+  {
+      "name": "BUGATTI",
+      "externalCode": "01365"
+  },
+  {
+      "name": "COMMERCIAL IGNITION",
+      "externalCode": "01366"
+  },
+  {
+      "name": "EUROREPAR",
+      "externalCode": "01367"
+  },
+  {
+      "name": "FRAM",
+      "externalCode": "01368"
+  },
+  {
+      "name": "FUCHS",
+      "externalCode": "01369"
+  },
+  {
+      "name": "GAZ",
+      "externalCode": "01370"
+  },
+  {
+      "name": "HAVAL",
+      "externalCode": "01371"
+  },
+  {
+      "name": "IVECO",
+      "externalCode": "01372"
+  },
+  {
+      "name": "LADA",
+      "externalCode": "01373"
+  },
+  {
+      "name": "LOHR",
+      "externalCode": "01374"
+  },
+  {
+      "name": "METALCAUCHO",
+      "externalCode": "01375"
+  },
+  {
+      "name": "M-FILTER",
+      "externalCode": "01376"
+  },
+  {
+      "name": "NEO TOOLS",
+      "externalCode": "01377"
+  },
+  {
+      "name": "NTY",
+      "externalCode": "01378"
+  },
+  {
+      "name": "OPET",
+      "externalCode": "01379"
+  },
+  {
+      "name": "PARUZZI",
+      "externalCode": "01380"
+  },
+  {
+      "name": "PROFIT",
+      "externalCode": "01381"
+  },
+  {
+      "name": "RAPRO",
+      "externalCode": "01382"
+  },
+  {
+      "name": "ROTINGER",
+      "externalCode": "01383"
+  },
+  {
+      "name": "SHAFER",
+      "externalCode": "01384"
+  },
+  {
+      "name": "SONAX",
+      "externalCode": "01385"
+  },
+  {
+      "name": "SSANG YONG",
+      "externalCode": "01386"
+  },
+  {
+      "name": "STC",
+      "externalCode": "01387"
+  },
+  {
+      "name": "SUNOCO",
+      "externalCode": "01388"
+  },
+  {
+      "name": "TESLA",
+      "externalCode": "01389"
+  },
+  {
+      "name": "TOPIC",
+      "externalCode": "01390"
+  },
+  {
+      "name": "YATO",
+      "externalCode": "01391"
+  },
+  {
+      "name": "KOLCHUGA",
+      "externalCode": "01392"
+  },
+  {
+      "name": "LESTA",
+      "externalCode": "01394"
+  },
+  {
+      "name": "SAPFIRE",
+      "externalCode": "01395"
+  },
+  {
+      "name": "SHERON",
+      "externalCode": "01396"
+  },
+  {
+      "name": "AXXIS",
+      "externalCode": "01397"
+  },
+  {
+      "name": "CARIFIL",
+      "externalCode": "01398"
+  },
+  {
+      "name": "FRAISER",
+      "externalCode": "01399"
+  },
+  {
+      "name": "MPM",
+      "externalCode": "01400"
+  },
+  {
+      "name": "NANOFROST",
+      "externalCode": "01402"
+  },
+  {
+      "name": "MTRAUTO",
+      "externalCode": "01403"
+  },
+  {
+      "name": "TOM PAR",
+      "externalCode": "01404"
+  },
+  {
+      "name": "ROODER",
+      "externalCode": "01405"
+  },
+  {
+      "name": "NO BRAND",
+      "externalCode": "01406"
+  },
+  {
+      "name": "VITOL",
+      "externalCode": "01407"
+  },
+  {
+      "name": "ALLOID",
+      "externalCode": "01408"
+  },
+  {
+      "name": "HANS",
+      "externalCode": "01409"
+  },
+  {
+      "name": "ALLOID BUILDING TOOLS",
+      "externalCode": "01410"
+  },
+  {
+      "name": "VOIN",
+      "externalCode": "01411"
+  },
+  {
+      "name": "AREON",
+      "externalCode": "01412"
+  },
+  {
+      "name": "PULSO",
+      "externalCode": "01413"
+  },
+  {
+      "name": "DR.MARCUS",
+      "externalCode": "01414"
+  },
+  {
+      "name": "DLAA",
+      "externalCode": "01415"
+  },
+  {
+      "name": "TASOTTI",
+      "externalCode": "01416"
+  },
+  {
+      "name": "TJG AUTO TOOLS",
+      "externalCode": "01417"
+  },
+  {
+      "name": "ШТУРМОВИК",
+      "externalCode": "01418"
+  },
+  {
+      "name": "ATAS",
+      "externalCode": "01419"
+  },
+  {
+      "name": "ABRO",
+      "externalCode": "01420"
+  },
+  {
+      "name": "HIC",
+      "externalCode": "01421"
+  },
+  {
+      "name": "T-MAX",
+      "externalCode": "01422"
+  },
+  {
+      "name": "EIKOSHA",
+      "externalCode": "01423"
+  },
+  {
+      "name": "Триада",
+      "externalCode": "01424"
+  },
+  {
+      "name": "VIMAX",
+      "externalCode": "01425"
+  },
+  {
+      "name": "ОКЕАН",
+      "externalCode": "01426"
+  },
+  {
+      "name": "ELEGANT",
+      "externalCode": "01427"
+  },
+  {
+      "name": "FLEXY",
+      "externalCode": "01428"
+  },
+  {
+      "name": "ELEPHANT",
+      "externalCode": "01429"
+  },
+  {
+      "name": "TORIN",
+      "externalCode": "01430"
+  },
+  {
+      "name": "CX-80",
+      "externalCode": "01431"
+  },
+  {
+      "name": "TIGER",
+      "externalCode": "01432"
+  },
+  {
+      "name": "3R",
+      "externalCode": "01433"
+  },
+  {
+      "name": "GP",
+      "externalCode": "01434"
+  },
+  {
+      "name": "POLYCHROM 2020",
+      "externalCode": "01435"
+  },
+  {
+      "name": "HENSTRONG",
+      "externalCode": "01436"
+  },
+  {
+      "name": "IRON HAND",
+      "externalCode": "01437"
+  },
+  {
+      "name": "SOLUX",
+      "externalCode": "01438"
+  },
+  {
+      "name": "MEGUIN",
+      "externalCode": "01439"
+  },
+  {
+      "name": "BLACKTECH",
+      "externalCode": "01440"
+  },
+  {
+      "name": "COJALI",
+      "externalCode": "01441"
+  },
+  {
+      "name": "DIESEL TECHNIK",
+      "externalCode": "01442"
+  },
+  {
+      "name": "ERREVI",
+      "externalCode": "01443"
+  },
+  {
+      "name": "FERSA",
+      "externalCode": "01444"
+  },
+  {
+      "name": "GLOBER",
+      "externalCode": "01445"
+  },
+  {
+      "name": "GRANTEX",
+      "externalCode": "01446"
+  },
+  {
+      "name": "JOHN DEERE",
+      "externalCode": "01447"
+  },
+  {
+      "name": "KNORR BREMSE",
+      "externalCode": "01448"
+  },
+  {
+      "name": "KRAFTIGER",
+      "externalCode": "01449"
+  },
+  {
+      "name": "MERITOR",
+      "externalCode": "01450"
+  },
+  {
+      "name": "ONNURI",
+      "externalCode": "01451"
+  },
+  {
+      "name": "PE AUTOMOTIVE",
+      "externalCode": "01452"
+  },
+  {
+      "name": "SAF",
+      "externalCode": "01453"
+  },
+  {
+      "name": "SAMPA",
+      "externalCode": "01454"
+  },
+  {
+      "name": "WABCO",
+      "externalCode": "01455"
+  },
+  {
+      "name": "FORCE",
+      "externalCode": "01456"
+  },
+  {
+      "name": "AMP",
+      "externalCode": "01457"
+  },
+  {
+      "name": "AUTOX",
+      "externalCode": "01458"
+  },
+  {
+      "name": "MITSUBOSHI",
+      "externalCode": "01459"
+  },
+  {
+      "name": "TASHIDO",
+      "externalCode": "01460"
+  },
+  {
+      "name": "CARFACE",
+      "externalCode": "01461"
+  }
+]

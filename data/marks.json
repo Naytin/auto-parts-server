@@ -1,0 +1,337 @@
+[
+    {
+        "id": 20,
+        "description": "CHRYSLER",
+        "fulldescription": "CHRYSLER"
+    },
+    {
+        "id": 21,
+        "description": "CITROËN",
+        "fulldescription": "CITROËN"
+    },
+    {
+        "id": 24,
+        "description": "DAF",
+        "fulldescription": "DAF"
+    },
+    {
+        "id": 29,
+        "description": "DODGE",
+        "fulldescription": "DODGE"
+    },
+    {
+        "id": 35,
+        "description": "FIAT",
+        "fulldescription": "FIAT"
+    },
+    {
+        "id": 36,
+        "description": "FORD",
+        "fulldescription": "FORD"
+    },
+    {
+        "id": 39,
+        "description": "GMC",
+        "fulldescription": "GMC"
+    },
+    {
+        "id": 45,
+        "description": "HONDA",
+        "fulldescription": "HONDA"
+    },
+    {
+        "id": 54,
+        "description": "ISUZU",
+        "fulldescription": "ISUZU"
+    },
+    {
+        "id": 55,
+        "description": "IVECO",
+        "fulldescription": "IVECO"
+    },
+    {
+        "id": 69,
+        "description": "MAN",
+        "fulldescription": "MAN"
+    },
+    {
+        "id": 72,
+        "description": "MAZDA",
+        "fulldescription": "MAZDA"
+    },
+    {
+        "id": 74,
+        "description": "MERCEDES-BENZ",
+        "fulldescription": "MERCEDES-BENZ"
+    },
+    {
+        "id": 75,
+        "description": "MG",
+        "fulldescription": "MG"
+    },
+    {
+        "id": 77,
+        "description": "MITSUBISHI",
+        "fulldescription": "MITSUBISHI"
+    },
+    {
+        "id": 80,
+        "description": "NISSAN",
+        "fulldescription": "NISSAN"
+    },
+    {
+        "id": 84,
+        "description": "OPEL",
+        "fulldescription": "OPEL"
+    },
+    {
+        "id": 88,
+        "description": "PEUGEOT",
+        "fulldescription": "PEUGEOT"
+    },
+    {
+        "id": 93,
+        "description": "RENAULT",
+        "fulldescription": "RENAULT"
+    },
+    {
+        "id": 104,
+        "description": "SEAT",
+        "fulldescription": "SEAT"
+    },
+    {
+        "id": 106,
+        "description": "SKODA",
+        "fulldescription": "SKODA"
+    },
+    {
+        "id": 107,
+        "description": "SUBARU",
+        "fulldescription": "SUBARU"
+    },
+    {
+        "id": 109,
+        "description": "SUZUKI",
+        "fulldescription": "SUZUKI"
+    },
+    {
+        "id": 111,
+        "description": "TOYOTA",
+        "fulldescription": "TOYOTA"
+    },
+    {
+        "id": 121,
+        "description": "VW",
+        "fulldescription": "VW"
+    },
+    {
+        "id": 138,
+        "description": "CHEVROLET",
+        "fulldescription": "CHEVROLET"
+    },
+    {
+        "id": 139,
+        "description": "DACIA",
+        "fulldescription": "DACIA"
+    },
+    {
+        "id": 178,
+        "description": "TATA",
+        "fulldescription": "TATA"
+    },
+    {
+        "id": 183,
+        "description": "HYUNDAI",
+        "fulldescription": "HYUNDAI"
+    },
+    {
+        "id": 184,
+        "description": "KIA",
+        "fulldescription": "KIA"
+    },
+    {
+        "id": 185,
+        "description": "DAEWOO",
+        "fulldescription": "DAEWOO"
+    },
+    {
+        "id": 694,
+        "description": "RENAULT TRUCKS",
+        "fulldescription": "RENAULT TRUCKS"
+    },
+    {
+        "id": 774,
+        "description": "PONTIAC",
+        "fulldescription": "PONTIAC"
+    },
+    {
+        "id": 776,
+        "description": "FORD USA",
+        "fulldescription": "FORD USA"
+    },
+    {
+        "id": 1496,
+        "description": "FORD AUSTRALIA",
+        "fulldescription": "FORD AUSTRALIA"
+    },
+    {
+        "id": 2859,
+        "description": "VW (FAW)",
+        "fulldescription": "VW (FAW)"
+    },
+    {
+        "id": 2864,
+        "description": "FORD ASIA / OCEANIA",
+        "fulldescription": "FORD ASIA / OCEANIA"
+    },
+    {
+        "id": 2867,
+        "description": "FOTON",
+        "fulldescription": "FOTON"
+    },
+    {
+        "id": 2868,
+        "description": "MAZDA (HAINAN)",
+        "fulldescription": "MAZDA (HAINAN)"
+    },
+    {
+        "id": 2873,
+        "description": "JAC",
+        "fulldescription": "JAC"
+    },
+    {
+        "id": 2887,
+        "description": "CHERY",
+        "fulldescription": "CHERY"
+    },
+    {
+        "id": 2891,
+        "description": "CITROËN (DF-PSA)",
+        "fulldescription": "CITROËN (DF-PSA)"
+    },
+    {
+        "id": 2903,
+        "description": "GREAT WALL",
+        "fulldescription": "GREAT WALL"
+    },
+    {
+        "id": 2909,
+        "description": "FAW JILIN",
+        "fulldescription": "FAW JILIN"
+    },
+    {
+        "id": 2910,
+        "description": "NISSAN (ZHENGZHOU)",
+        "fulldescription": "NISSAN (ZHENGZHOU)"
+    },
+    {
+        "id": 3035,
+        "description": "VW (SVW)",
+        "fulldescription": "VW (SVW)"
+    },
+    {
+        "id": 3040,
+        "description": "JMC",
+        "fulldescription": "JMC"
+    },
+    {
+        "id": 3071,
+        "description": "BAW",
+        "fulldescription": "BAW"
+    },
+    {
+        "id": 3086,
+        "description": "LIFAN",
+        "fulldescription": "LIFAN"
+    },
+    {
+        "id": 3122,
+        "description": "BYD",
+        "fulldescription": "BYD"
+    },
+    {
+        "id": 3125,
+        "description": "FORD (CHANGAN)",
+        "fulldescription": "FORD (CHANGAN)"
+    },
+    {
+        "id": 3126,
+        "description": "HONDA (DONGFENG)",
+        "fulldescription": "HONDA (DONGFENG)"
+    },
+    {
+        "id": 3127,
+        "description": "KIA (DYK)",
+        "fulldescription": "KIA (DYK)"
+    },
+    {
+        "id": 3129,
+        "description": "HONDA (GAC)",
+        "fulldescription": "HONDA (GAC)"
+    },
+    {
+        "id": 3130,
+        "description": "TOYOTA (GAC)",
+        "fulldescription": "TOYOTA (GAC)"
+    },
+    {
+        "id": 3132,
+        "description": "NAC IVECO (NAVECO)",
+        "fulldescription": "NAC IVECO (NAVECO)"
+    },
+    {
+        "id": 3138,
+        "description": "MAZDA (FAW)",
+        "fulldescription": "MAZDA (FAW)"
+    },
+    {
+        "id": 3141,
+        "description": "NISSAN (DONGFENG)",
+        "fulldescription": "NISSAN (DONGFENG)"
+    },
+    {
+        "id": 3143,
+        "description": "SUZUKI (CHANGAN)",
+        "fulldescription": "SUZUKI (CHANGAN)"
+    },
+    {
+        "id": 3199,
+        "description": "SUZUKI (CHANGHE)",
+        "fulldescription": "SUZUKI (CHANGHE)"
+    },
+    {
+        "id": 3274,
+        "description": "DAIHATSU (FAW)",
+        "fulldescription": "DAIHATSU (FAW)"
+    },
+    {
+        "id": 3522,
+        "description": "MERCEDES-BENZ (FJDA)",
+        "fulldescription": "MERCEDES-BENZ (FJDA)"
+    },
+    {
+        "id": 3531,
+        "description": "PEUGEOT (DF-PSA)",
+        "fulldescription": "PEUGEOT (DF-PSA)"
+    },
+    {
+        "id": 3610,
+        "description": "FAW",
+        "fulldescription": "FAW"
+    },
+    {
+        "id": 3656,
+        "description": "FORD (JMC)",
+        "fulldescription": "FORD (JMC)"
+    },
+    {
+        "id": 3689,
+        "description": "RAM",
+        "fulldescription": "RAM"
+    },
+    {
+        "id": 4439,
+        "description": "BOGDAN",
+        "fulldescription": "BOGDAN"
+    }
+]

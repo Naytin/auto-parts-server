@@ -1,18 +1,48 @@
 const express = require('express');
 const router = express.Router();
 const pool = require('../mysql')
+const {BRANDS_CHANGE} = require('../consts')
 
+const {detail, photos} = require('../mysql/actions')
 
-router.get('/api/models222', async (req, res) => {
+router.get('/api/category', async (req, res) => {
   try {
-    const mark = req.query.mark;
-    const year = req.query.year;
-    const [rows] = await pool.execute(`SELECT DISTINCT models.id, models.description, models.constructioninterval 
-      FROM models
-      INNER JOIN passanger_cars ON models.id = passanger_cars.modelid
-      INNER JOIN passanger_car_attributes ON passanger_cars.id = passanger_car_attributes.passangercarid
-      WHERE models.manufacturerid = ?
-      AND passanger_car_attributes.displayvalue IN ('Фургон', 'автобус', 'вэн', 'Фургон/универсал', 'Самосвал', 'Автомобиль для нужд коммунальног', 'тягач')`, [mark]);
+    const modification = req.query.modification;
+    const category = req.query.category;
+
+    const [rows] = await pool.execute(`SELECT * FROM passanger_car_trees
+    WHERE passangercarid = ? 
+    AND LOWER(REGEXP_REPLACE(description, '[,/-]', '-')) LIKE ?`, [modification, `%${category}%`]);
+    if (rows.length > 0) {
+      res.json(rows[0]);
+     } else {
+      res.json([]);
+     }
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Ошибка сервера');
+  }
+});
+
+router.get('/api/detail2', async (req, res) => {
+  try {
+    const id = req.query.id;
+    const brand = req.query.brand;
+    const [rows] = await pool.execute(`
+    SELECT article_attributes.description,
+      article_attributes.displaytitle, 
+      article_attributes.displayvalue, 
+      article_attributes.datasupplierarticlenumber,
+      article_attributes.supplierid,
+      suppliers.description AS brand
+    FROM articles
+    INNER JOIN suppliers ON suppliers.description = ? 
+    INNER JOIN article_attributes ON suppliers.id = article_attributes.supplierid 
+      AND articles.DataSupplierArticleNumber = article_attributes.datasupplierarticlenumber 
+    WHERE 
+      articles.DataSupplierArticleNumber = ?
+      OR articles.FoundString = ?
+    `, [brand, id, id]);
       
     res.json(rows);
   } catch (err) {
@@ -21,21 +51,37 @@ router.get('/api/models222', async (req, res) => {
   }
 });
 
-router.get('/api/models22', async (req, res) => {
+router.get('/api/tables', async (req, res) => {
   try {
-    const mark = req.query.mark;
-    const year = req.query.year;
-    const [rows] = await pool.execute(`SELECT DISTINCT models.id, models.description, models.constructioninterval 
-      FROM models
-      INNER JOIN passanger_cars ON models.id = passanger_cars.modelid
-      INNER JOIN passanger_car_attributes ON passanger_cars.id = passanger_car_attributes.passangercarid
-      WHERE models.manufacturerid = ?
-      AND (
-        SUBSTRING(passanger_cars.constructioninterval, -4) = ?
-        OR SUBSTRING_INDEX(passanger_cars.constructioninterval, ' - ', 1) LIKE ?
-        OR SUBSTRING_INDEX(passanger_cars.constructioninterval, ' - ', -1) LIKE ?
-      )
-      AND passanger_car_attributes.displayvalue IN ('Фургон', 'автобус', 'вэн', 'Фургон/универсал', 'Самосвал', 'Автомобиль для нужд коммунальног', 'тягач')`, [mark, year, `%.${year}`, `%.${year}`]);
+    const [rows] = await pool.execute(`
+      SELECT table_name, column_name
+      FROM information_schema.columns
+      WHERE table_schema = DATABASE();
+    `);
+      
+    const result = rows.reduce((acc, {table_name, column_name}) => {
+      if (!acc[table_name]) {
+        acc[table_name] = {fields: [column_name]};
+      } else {
+        acc[table_name].fields.push(column_name);
+      }
+      return acc;
+    }, {});
+
+    res.json(result);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send(err);
+  }
+});
+router.get('/api/table', async (req, res) => {
+  try {
+    const id = req.query.id;
+    const field = req.query.field;
+    const table = req.query.table;
+    const [rows] = await pool.execute(`SELECT *
+    FROM ${table}
+    WHERE ${field} = ? LIMIT 1000`, [id]);
       
     res.json(rows);
   } catch (err) {
@@ -43,65 +89,19 @@ router.get('/api/models22', async (req, res) => {
     res.status(500).send(err);
   }
 });
-router.get('/api/engines3', async (req, res) => {
+
+
+router.post('/api/images', async (req, res) => {
   try {
-    const model = req.query.model;
-    const year = req.query.year;
-    const [rows] = await pool.execute(`
-    SELECT DISTINCT passanger_cars.id, passanger_cars.description,passanger_cars.fulldescription, 
-    passanger_cars.constructioninterval, passanger_cars.modelid, passanger_car_attributes.displayvalue
-    FROM passanger_cars
-    INNER JOIN passanger_car_attributes ON passanger_cars.id = passanger_car_attributes.passangercarid
-    WHERE passanger_cars.modelid = ?
-    AND SUBSTRING(passanger_cars.constructioninterval, -4) >= ?
-    AND passanger_car_attributes.attributetype = "FuelType"`, [model, year]);
-      
+    const {id, brands} = req.body;
+    const rows = await photos(id, brands)
     res.json(rows);
-  } catch (error) {
-    console.error(error);
-    res.status(500).send('Ошибка сервера');
+  } catch (err) {
+    console.error(err);
+    res.status(500).send(err);
   }
 });
-router.get('/api/engines2', async (req, res) => {
-  try {
-    const model = req.query.model;
-    const year = req.query.year;
-    const [rows] = await pool.execute(`
-    SELECT DISTINCT passanger_cars.id, passanger_cars.description,passanger_cars.fulldescription, 
-    passanger_cars.constructioninterval, passanger_cars.modelid, passanger_car_attributes.displayvalue
-    FROM passanger_cars
-    INNER JOIN passanger_car_attributes ON passanger_cars.id = passanger_car_attributes.passangercarid
-    WHERE passanger_cars.modelid = ?
-    AND (
-      (SUBSTRING(passanger_cars.constructioninterval, -4) = ?)
-      OR (SUBSTRING_INDEX(passanger_cars.constructioninterval, ' - ', 1) BETWEEN 1980 AND ?)
-      OR (SUBSTRING_INDEX(passanger_cars.constructioninterval, ' - ', -1) BETWEEN 1980 AND ?)
-    )
-    AND passanger_car_attributes.attributetype = "FuelType"`, [model, year, `%.${year}`, `%.${year}`]);
-      
-    res.json(rows);
-  } catch (error) {
-    console.error(error);
-    res.status(500).send('Ошибка сервера');
-  }
-});
-router.post('/api/engines22', async (req, res) => {
-  try {
-    const {model, year} = req.body
-    const [rows] = await pool.execute(`
-    SELECT DISTINCT passanger_cars.id, passanger_cars.description,passanger_cars.fulldescription, 
-    passanger_cars.constructioninterval, passanger_cars.modelid, passanger_car_attributes.displayvalue
-    FROM passanger_cars
-    INNER JOIN passanger_car_attributes ON passanger_cars.id = passanger_car_attributes.passangercarid
-    WHERE passanger_cars.modelid = ?
-    AND passanger_car_attributes.attributetype = "FuelType"`, [model]);
-      
-    res.json(rows);
-  } catch (error) {
-    console.error(error);
-    res.status(500).send('Ошибка сервера');
-  }
-});
+
 router.get('/api/test', async (req, res) => {
   try {
     res.json('Тестовый запрос');
@@ -124,7 +124,6 @@ router.get('/api/model2', async (req, res) => {
     res.status(500).send('Ошибка сервера');
   }
 });
-
 router.post('/api/model', async (req, res) => {
   try {
     const {model} = req.body;
@@ -152,28 +151,15 @@ router.post('/api/models', async (req, res) => {
       INNER JOIN passanger_car_attributes ON passanger_cars.id = passanger_car_attributes.passangercarid
       WHERE models.manufacturerid = ?
       AND (
-        (SUBSTRING(passanger_cars.constructioninterval, -4) = ?)
-        OR (SUBSTRING_INDEX(passanger_cars.constructioninterval, ' - ', 1) BETWEEN 1980 AND ?)
-        OR (SUBSTRING_INDEX(passanger_cars.constructioninterval, ' - ', -1) BETWEEN 1980 AND ?)
+        YEAR(STR_TO_DATE(SUBSTRING_INDEX(passanger_cars.constructioninterval, ' - ', 1), '%m.%Y')) <= ?
+        AND (
+          YEAR(STR_TO_DATE(SUBSTRING_INDEX(passanger_cars.constructioninterval, ' - ', -1), '%m.%Y')) >= ?
+          OR SUBSTRING_INDEX(passanger_cars.constructioninterval, ' - ', -1) = ''
+        )
+        OR SUBSTRING_INDEX(passanger_cars.constructioninterval, ' - ', -1) = ?
       )
-      AND passanger_car_attributes.displayvalue IN ('Фургон', 'автобус', 'вэн', 'Фургон/универсал', 'Самосвал', 'Автомобиль для нужд коммунальног', 'тягач')`, [mark, year]);
-    res.json(rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send(err);
-  }
-});
-
-router.post('/api/models2', async (req, res) => {
-  try {
-    const {mark, year} = req.body;
-    const [rows] = await pool.execute(`SELECT DISTINCT models.id, models.description, models.constructioninterval 
-      FROM models
-      INNER JOIN passanger_cars ON models.id = passanger_cars.modelid
-      INNER JOIN passanger_car_attributes ON passanger_cars.id = passanger_car_attributes.passangercarid
-      WHERE models.manufacturerid = ?
-      AND passanger_car_attributes.displayvalue IN ('Фургон', 'автобус', 'вэн', 'Фургон/универсал', 'Самосвал', 'Автомобиль для нужд коммунальног', 'тягач')`, [mark]);
-
+      AND passanger_car_attributes.displayvalue IN ('Фургон', 'автобус', 'вэн', 'Фургон/универсал', 'Самосвал', 'Автомобиль для нужд коммунальног', 'тягач')`, [mark, year, year, year]);
+      
     res.json(rows);
   } catch (err) {
     console.error(err);
@@ -186,7 +172,7 @@ router.post('/api/modification', async (req, res) => {
     const {modification} = req.body
     console.log('query', modification)
     const [rows] = await pool.execute(`
-    SELECT DISTINCT passanger_cars.id, passanger_cars.description,passanger_cars.fulldescription, passanger_cars.constructioninterval, passanger_cars.mo>
+    SELECT DISTINCT passanger_cars.id, passanger_cars.description,passanger_cars.fulldescription, passanger_cars.constructioninterval, passanger_cars.modelid, passanger_car_attributes.displayvalue
     FROM passanger_cars
     INNER JOIN passanger_car_attributes ON passanger_cars.id = passanger_car_attributes.passangercarid
     WHERE passanger_cars.id = ?
@@ -204,19 +190,32 @@ router.post('/api/modification', async (req, res) => {
   }
 });
 
+router.get('/api/detail', async (req, res) => {
+  try {
+    const id = req.query.id;
+    const brand = req.query.brand;
+    const response = await detail(id, BRANDS_CHANGE[brand] || brand)
+    
+    res.json(response);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send(err);
+  }
+});
+
 router.post('/api/category', async (req, res) => {
   try {
     const {modification, category} = req.body
     const [rows] = await pool.execute(`SELECT * FROM passanger_car_trees
     WHERE passangercarid = ? 
-    AND LOWER(REGEXP_REPLACE(description, '[,/-]', '')) LIKE ?`, [modification, `%${category}%`]);
+    AND LOWER(REGEXP_REPLACE(description, '[,/-]', '-')) LIKE ?`, [modification, `%${category}%`]);
 
     if (rows.length > 0) {
       res.json(rows[0]);
      } else {
       res.json([]);
      }
-  } catch (error) {
+  } catch (err) {
     console.error(err);
     res.status(500).send('Ошибка сервера');
   }
@@ -241,7 +240,7 @@ router.post('/api/categoryArticles', async (req, res) => {
         `, [modificationId, categoryId, modificationId, ...ids]);
       
         res.json(rows);
-  } catch (error) {
+  } catch (err) {
     console.error(err);
     res.status(500).send('Ошибка сервера');
   }
@@ -253,7 +252,7 @@ router.post('/api/tree', async (req, res) => {
     const [rows] = await pool.execute('SELECT passangercarid,id,parentid,description FROM passanger_car_trees WHERE passangercarid = ?', [modification]);
       
     res.json(rows);
-  } catch (error) {
+   } catch (err) {
     console.error(err);
     res.status(500).send('Ошибка сервера');
   }
@@ -269,14 +268,17 @@ router.post('/api/engines', async (req, res) => {
     INNER JOIN passanger_car_attributes ON passanger_cars.id = passanger_car_attributes.passangercarid
     WHERE passanger_cars.modelid = ?
     AND (
-      (SUBSTRING(passanger_cars.constructioninterval, -4) = ?)
-      OR (SUBSTRING_INDEX(passanger_cars.constructioninterval, ' - ', 1) BETWEEN 1980 AND ?)
-      OR (SUBSTRING_INDEX(passanger_cars.constructioninterval, ' - ', -1) BETWEEN 1980 AND ?)
+      YEAR(STR_TO_DATE(SUBSTRING_INDEX(passanger_cars.constructioninterval, ' - ', 1), '%m.%Y')) <= ?
+      AND (
+        YEAR(STR_TO_DATE(SUBSTRING_INDEX(passanger_cars.constructioninterval, ' - ', -1), '%m.%Y')) >= ?
+        OR SUBSTRING_INDEX(passanger_cars.constructioninterval, ' - ', -1) = ''
+      )
+      OR SUBSTRING_INDEX(passanger_cars.constructioninterval, ' - ', -1) = ?
     )
-    AND passanger_car_attributes.attributetype = "FuelType"`, [model, year, `%.${year}`, `%.${year}`]);
+    AND passanger_car_attributes.attributetype = "FuelType"`, [model, year, year, year]);
       
     res.json(rows);
-  } catch (error) {
+  } catch (err) {
     console.error(err);
     res.status(500).send('Ошибка сервера');
   }
@@ -296,7 +298,7 @@ router.post('/api/originalArticles', async (req, res) => {
     GROUP BY OENbr_clr`, [mark, ...supplierId, ...supplierNumber]);
       
     res.json(rows);
-  } catch (error) {
+  } catch (err) {
     console.error(err);
     res.status(500).send('Ошибка сервера');
   }
@@ -316,7 +318,7 @@ router.post('/api/brands', async (req, res) => {
     AND suppliers.description IN (${questionMarks})`, [modificationId, ...ids]);
       
     res.json(rows);
-  } catch (error) {
+  } catch (err) {
     console.error(err);
     res.status(500).send('Ошибка сервера');
   }

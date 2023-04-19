@@ -2,8 +2,35 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../mysql')
 const {BRANDS_CHANGE} = require('../consts')
-
+const models = require('../data/models.json')
+const brand = require('../data/apiBrands.json')
 const {detail, photos} = require('../mysql/actions')
+
+router.get('/api/categoryArticles2', async (req, res) => {
+  try {
+    const categoryId = req.query.categoryId;
+    const b = brand.map(() => "?").join(",");
+    const brandNames = brand.map((m) => m.name);
+    const model = models.map(() => "?").join(",");
+    const modelIds = models.map((m) => m.id);
+
+    const [rows] = await pool.execute(`
+    SELECT DISTINCT article_links.supplierid, article_links.datasupplierarticlenumber, suppliers.description
+    FROM passanger_car_pds 
+    INNER JOIN article_links ON passanger_car_pds.productid = article_links.productid 
+    INNER JOIN suppliers ON article_links.supplierid = suppliers.id
+    WHERE passanger_car_pds.passangercarid IN (${model})
+        AND passanger_car_pds.nodeid = ? 
+        AND article_links.linkageid = IN (${model})
+        AND suppliers.description IN (${brandNames})
+        `, [...modelIds, categoryId, ...modelIds, ...b]);
+      
+        res.json(rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Ошибка сервера');
+  }
+});
 
 router.get('/api/category', async (req, res) => {
   try {
@@ -21,33 +48,6 @@ router.get('/api/category', async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).send('Ошибка сервера');
-  }
-});
-
-router.get('/api/detail2', async (req, res) => {
-  try {
-    const id = req.query.id;
-    const brand = req.query.brand;
-    const [rows] = await pool.execute(`
-    SELECT article_attributes.description,
-      article_attributes.displaytitle, 
-      article_attributes.displayvalue, 
-      article_attributes.datasupplierarticlenumber,
-      article_attributes.supplierid,
-      suppliers.description AS brand
-    FROM articles
-    INNER JOIN suppliers ON suppliers.description = ? 
-    INNER JOIN article_attributes ON suppliers.id = article_attributes.supplierid 
-      AND articles.DataSupplierArticleNumber = article_attributes.datasupplierarticlenumber 
-    WHERE 
-      articles.DataSupplierArticleNumber = ?
-      OR articles.FoundString = ?
-    `, [brand, id, id]);
-      
-    res.json(rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send(err);
   }
 });
 
@@ -102,28 +102,6 @@ router.post('/api/images', async (req, res) => {
   }
 });
 
-router.get('/api/test', async (req, res) => {
-  try {
-    res.json('Тестовый запрос');
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Ошибка сервера');
-  }
-});
-
-router.get('/api/model2', async (req, res) => {
-  try { 
-    const model = req.query.model;
-    const [rows] = await pool.execute(`
-      SELECT id, description, manufacturerid FROM models
-      WHERE id = ?`, [model]);
-      
-    res.json(rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Ошибка сервера');
-  }
-});
 router.post('/api/model', async (req, res) => {
   try {
     const {model} = req.body;

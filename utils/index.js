@@ -32,10 +32,10 @@ const passwordGenerator = () => {
 
   return password
 }
-export const addPercent = (sum, PERCENT) => {
+const addPercent = (sum, PERCENT) => {
   if (!sum) return 0
   
-  return Number((((PERCENT / 100) * sum) + sum).toFixed(0))
+  return Number((((PERCENT / 100) * sum) + sum).toFixed(2))
 }
 
 const checkExpiration = (dateString) => {
@@ -74,5 +74,6 @@ module.exports = {
   filterPartByExist,
   timeout,
   checkExpiration,
-  passwordGenerator
+  passwordGenerator,
+  addPercent
 }
