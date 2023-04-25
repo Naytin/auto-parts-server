@@ -1,5 +1,7 @@
 const pool = require('./')
-
+const {preparePartsForDB, getData, exportResults} = require('../utils')
+const { dirname } = require('path');
+const appDir = dirname(require.main.filename);
 const articles = async (brands, modificationId, categoryId) => {
   try {
     const ids = Array.from(new Set(brands))
@@ -90,11 +92,133 @@ const detail = async (id, brand) => {
   }
 }
 
+const articleCategory = async (article) => {
+  try {
+    const categories = await getData('/data/categories.json')
+    console.log('start articleCategory')
+    //check if category exists
+    const articles = article.filter(a => {
+      const n = categories.filter(n => n.productid === a.productid && n.supplierid === a.supplierid)
+      if (!Boolean(n.length)) {
+        return a
+      }
+    })
+
+    const batchSize = 20;
+    const cat = []
+
+    for (let i = 0; i < articles.length; i += batchSize) {
+      const batch = articles.slice(i, i + batchSize);
+      const request = batch?.map((p, idx) => {
+        if (idx === batch.length - 1 ) {
+          return `(passanger_car_pds.productid = ${p.productid} AND passanger_car_pds.supplierid = ${p.supplierid})`
+        }
+        return `(passanger_car_pds.productid = ${p.productid} AND passanger_car_pds.supplierid = ${p.supplierid}) OR`
+      }).join('\n')
+      console.log('request', i, 'Category', batch.length)
+
+      const [rows] = await pool.execute(`SELECT * 
+        FROM passanger_car_pds 
+        where 
+        ${request}
+        group by nodeid, supplierid, productid;
+        `)
+
+      cat.push(...rows)
+    }
+
+    if (articles.length > 0) {
+      console.log('found cat', cat.length)
+      const category = [...categories, ...cat]
+
+      const changed = await preparePartsForDB(article, category)
+      await exportResults(category, '/data/categories.json')
+     
+      return changed;
+    }
+    console.log('articleCategory pass')
+    return await preparePartsForDB(article, categories)
+  } catch (error) {
+    console.log('articleCategory error', error)
+  }
+}
+
+const category = async (pricelist) => {
+  try {
+    const brands = await getData('/data/brands_for_request.json')
+    const modif = await getData('/data/passanger_bus.json')
+    const tecdoc_brands = await getData('/data/brands_from_tecdoc.json')
+    const ids = modif.map(m => m.id)
+    const questionMarks = modif.map(() => "?").join(",");
+    const batchSize = 1000;
+    const arr = []
+    console.log('all', pricelist?.length)
+    
+    for (let i = 0; i < pricelist.length; i += batchSize) {
+      const batch = pricelist.slice(i, i + batchSize);
+   
+      const request = batch?.map((p, idx) => {
+        const art = p['Артикул']
+        
+        const article = art.replace(/[^a-zA-Z0-9]/g, '')
+        const brand = brands[p['Бренд']] ? brands[p['Бренд']].map((brand) => `'${brand}'`).join(',') : `'${p['Бренд']}'`;
+        
+        if (idx === batch.length - 1 ) {
+          return `(articles.FoundString = "${article}" AND suppliers.description IN (${brand}))`
+        }
+        return `(articles.FoundString = "${article}" AND suppliers.description IN (${brand})) OR`
+      }).join('\n')
+      console.log('request', i, 'parts', batch.length)
+      
+      const [rows] = await pool.execute(`SELECT article_links.datasupplierarticlenumber, articles.supplierid, suppliers.description, article_links.productid
+        FROM articles
+        inner JOIN article_links ON article_links.datasupplierarticlenumber = articles.datasupplierarticlenumber 
+          AND article_links.supplierid = articles.supplierId
+          AND article_links.linkageid in (${questionMarks})
+        inner JOIN suppliers ON articles.supplierid = suppliers.id 
+        where 
+        ${request}
+        group by article_links.datasupplierarticlenumber, suppliers.description;
+        `,[...ids])
+  
+        console.log('found', rows.length)
+        console.log('all', arr.length)
+        if (Boolean(rows.length)) {
+          const changed = await articleCategory(rows)
+          
+          arr.push(...changed)
+        }
+    }
+    console.log('finish parts', Object.keys(arr).length)
+
+    for(const [index, p] of pricelist.entries()) {
+      const key = p['Артикул'].replace(/[^a-zA-Z0-9]/g, '')
+
+      const detail = arr.find(a => {
+        const brands = tecdoc_brands[a.description] || [p['Бренд']]
+
+        if (a.datasupplierarticlenumber.replace(/[^a-zA-Z0-9]/g, '') === key && brands.includes(p['Бренд'])) {
+          return a
+        }
+      })
+
+      if (detail) {
+        pricelist[index] = {...p, ...detail}
+      }
+    }
+    
+    return pricelist
+  } catch (error) {
+    console.log('error', error)
+  }
+}
+
 
 
 module.exports = {
   articles,
   articles_original,
   photos,
-  detail
+  detail,
+  category
 }

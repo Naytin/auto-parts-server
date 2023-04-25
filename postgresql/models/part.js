@@ -10,7 +10,12 @@ const Part = (sequelize) => {
     price:{ type: DataType.STRING, field: 'price' },
     currency:{ type: DataType.STRING, field: 'currency' },
     remainsAll:{ type: DataType.JSON, field: 'remainAll' },
-    remain:{ type: DataType.INTEGER, field: 'remain' }
+    remain:{ type: DataType.INTEGER, field: 'remain' },
+		tArticle: { type: DataType.STRING, field: 'tArticle'},
+    supplierid: { type: DataType.INTEGER, field: 'supplierid'},
+    productid: { type: DataType.INTEGER, field: 'productid'},
+    tBrand: { type: DataType.STRING, field: 'tBrand'},
+    category: { type: DataType.JSON, field: 'category'}
 	},{
 		tableName: 'part',
 		timestamps: false,

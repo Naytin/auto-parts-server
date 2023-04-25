@@ -1,9 +1,9 @@
 const {db} = require('../postgresql')
 const {token_data} = require('./config')
-const {prepareParts, timeout, checkExpiration} = require('../utils')
+const {prepareParts, timeout, checkExpiration, getData, exportResults} = require('../utils')
 const {authErrors} = require('../consts')
 const request = require('request')
-
+const {category} = require('../mysql/actions')
 const checkJWT = async (token) => {
   try {
     const options = {
@@ -276,7 +276,7 @@ const main = async () => {
     const brands = await getParams()
     if (!brands) throw new Error('Произошла ошибка получения брендов')
     const brand = brands?.map(b => b.id)
-    console.log('brands')
+    // console.log('brands')
     //request for price list
     const id = await requestPriceList(brand)
     if (!id) throw new Error('Произошла ошибка в запросе на прайс лист')
@@ -288,17 +288,22 @@ const main = async () => {
     console.log('getPriceLists', token)
     // git price list
     const pricelist = await getPriceList(token)
-
+    // const pricelist = await getData('/data/pricelist.json')
+   
     if (pricelist?.length > 0) {
-      const res = await db.Part.destroy({where: {}})
+       //prepare price list with categories
+      const pricel = await category(pricelist)
+      if (!Boolean(pricel.length)) throw new Error('Произошла ошибка в подготовке категорий')
       const price = prepareParts(pricelist)
 
+      const res = await db.Part.destroy({where: {}})
+      // await exportResults(price, '/data/arr.json')
       for (let i = 0; i < price.length; i++) {
         await db.Part.create(price[i])
       }
       
       for (const brand of brands) {
-        await findOrCreate({
+        await db.Brands.findOrCreate({
           where: {name: brand.name},
           defaults: {name: brand.name},
         });

@@ -8,53 +8,6 @@ const BRANDS_CHANGE = {
   "BOSCH АКБ": "BOSCH"
 }
 
-const TECDOC_BRANDS = {
-  "ZF Parts": ["ZF"],
-  "CALORSTAT by Vernet": ["VERNET"],
-  "TRUCKTEC AUTOMOTIVE": ["TRUCKTEC", "TRUCKTEC AUTOMOTIVE"],
-  "TEDGUM": ["TED-GUM", "TEDGUM", "TED GUM"],
-  "Saleri SIL": ["SALERI", "SIL", "Saleri SIL"],
-  "QUINTON HAZELL": ["QH"],
-  "POLMO": ["POLMOSTROW"],
-  "PE Automotive": ["PETERS"],
-  "PARTS-MALL": ["DONGIL", "CAR-DEX", "PARTS-MALL", "PMC", "ADDAX-Q"],
-  "NÜRAL": ["NURAL"],
-  "MEAT & DORIA": ["MEAT&DORIA"],
-  "LYNXauto": ["LYNX"],
-  "LUCAS ELECTRICAL": ["LUCAS"],
-  "LUCAS DIESEL": ["LUCAS"],
-  "LEMFÖRDER": ["LEMFORDER"],
-  "KYB": ["K-FLEX", "KYB", "KAYABA"],
-  "ORIGINAL IMPERIUM": ["IMPERGOM"],
-  "HSB GOLD": ["HSB"],
-  "HENGST FILTER": ["HENGST"],
-  "LÖBRO": ["LOBRO"],
-  "CoopersFiaam": ["COOPERSFIAAM", "COOPERS", "FIAAM"],
-  "FA1": ["FISCHER", "FA1", "FISCHER AUTOMOTIVE ONE"],
-  "E.T.F.": ["ETF"],
-  "DT Spare Parts": ["DT"],
-  "CS Germany": ["CS"],
-  "CONTITECH": ["CONTITECH", "CONTI"],
-  "HC-Cargo": ["CARGO"],
-  "BOSCH DIAGNOSTICS": ["BOSCH", "BOSCH SERVICE", "BOSCH АКБ"],
-  "BOSCH": ["BOSCH", "BOSCH SERVICE", "BOSCH АКБ"],
-  "BEHR HELLA SERVICE": ["BEHR-HELLA", "BEHR", "BEHR (HELLA)", "HELLA PAGID", "HELLA"],
-  "BEHR": ["BEHR", "BEHR (HELLA)", "HELLA PAGID", "HELLA"],
-  "AL-KO": ["ALKO"],
-  "AVA QUALITY COOLING": ["AVA", "AVA COOLING"],
-  "AUTOMEGA": ["AUTOMEGA", "AUTOMEGA - DELLO", "DELLO"],
-  "AUTOFREN SEINSA": ["AUTOFREN", "SEINSA", "AUTOFREN SEINSA"],
-  "JS ASAKASHI": ["ASAKASHI"],
-  "AS METAL": ["ASMETAL"],
-  "ALCO FILTER": ["ALCO", "ALCO FILTERS"],
-  "AMC": ["AMC"],
-  "AMC Filter": ["AMC"],
-  "BF": ["BF GERMANY"],
-  "SNR": ["NTN-SNR", "SNR", "NTN"],
-  "VALEO": ["VALEO", "VALEO PHC"],
-  "FEBI BILSTEIN": ["FEBI BILSTEIN", "FEBI"]
-}
-
 const CATEGORY_UNIQUETRADE = ['олива', 'лампи','Акумулятори', 'Акумуляторна батарея', 'олива моторна', 'колодки']
 const margin_percentage = 19.41324
 const UNIQUETRADE = {
@@ -69,6 +22,5 @@ module.exports = {
   IMAGE_URL,
   WEBP_URL,
   BRANDS_CHANGE,
-  margin_percentage,
-  TECDOC_BRANDS
+  margin_percentage
 }

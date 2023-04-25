@@ -1,4 +1,18 @@
 const {IDS} = require('../consts')
+const fs = require('fs')
+const { dirname } = require('path');
+const appDir = dirname(require.main.filename);
+
+// function for export to json file
+const exportResults = async (parsedResults, outputFile = 'data.json') => {
+  const jsonContent = JSON.stringify(parsedResults, null, 4);
+  fs.writeFileSync(appDir.replace('/cron', '') + outputFile, jsonContent);
+}
+
+const getData = async (data) => {
+  const response = fs.readFileSync(appDir.replace('/cron', '') + data,'utf8')
+  return JSON.parse(response)
+}
 
 const timeout = async (time) =>  await new Promise(r => setTimeout(r, time));
 const filterPartByExist = (part) => {
@@ -47,14 +61,46 @@ const checkExpiration = (dateString) => {
   return oneHourAgo > new Date();
 }
 
+const preparePartsForDB = async (parts, node) => {
+  try {
+    for (const [index, part] of parts.entries()) {
+      const n = node.filter(n => n.productid === part.productid && n.supplierid === part.supplierid)
+      const categories = n.map(cat => cat.nodeid)
+
+      if (Boolean(n.length)) {
+        parts[index] = {...part, category: Array.from(new Set(categories))}
+      } else {
+        parts[index] = {...part, category: []}
+      }
+    }
+
+    return parts;
+  } catch (error) {
+    console.log('preparePart error', error)
+  }
+}
+
 const prepareParts = (parts) => {
   return parts.map(p => {
+    // const { 
+    //   "Артикул": article,
+    //   "Наименование": title,
+    //   "Бренд": brand,
+    //   "Валюта": currency,
+    //   "Цена": price,
+    //   ...rest
+    // } = p;
     const { 
       "Артикул": article,
       "Наименование": title,
       "Бренд": brand,
       "Валюта": currency,
       "Цена": price,
+      datasupplierarticlenumber,
+      supplierid,
+      description,
+      productid,
+      category,
       ...rest
     } = p;
 
@@ -65,6 +111,11 @@ const prepareParts = (parts) => {
       brand,
       currency,
       price,
+      tArticle: datasupplierarticlenumber,
+      supplierid,
+      productid,
+      tBrand: description,
+      category,
       remainsAll: {...rest}
     }
   })
@@ -76,5 +127,8 @@ module.exports = {
   timeout,
   checkExpiration,
   passwordGenerator,
-  addPercent
+  addPercent,
+  preparePartsForDB,
+  getData,
+  exportResults
 }

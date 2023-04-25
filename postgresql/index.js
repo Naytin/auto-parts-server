@@ -17,12 +17,12 @@ async function initialize() {
   console.log('initialize DB')
     const sequelize = new Sequelize(
     {
-      database: "root",
-      username: "root",
-      password: "autoParts123!",
-      // database: "auto-parts",
-      // username: "postgres",
-      // password: "qwerty",
+      // database: "root",
+      // username: "root",
+      // password: "autoParts123!",
+      database: "auto-parts",
+      username: "postgres",
+      password: "qwerty",
       host: '127.0.0.1',
       dialect: 'postgres',
       protocol: 'postgres',
