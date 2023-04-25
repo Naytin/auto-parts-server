@@ -11,7 +11,6 @@ const order = require('../postgresql/resolvers/order')
 const reviews = require('../postgresql/resolvers/reviews')
 const tree = require('../postgresql/resolvers/tree')
 const user = require('../postgresql/resolvers/user')
-
 // orders - start
 router.post('/api/db/order', async (req, res) => {
   try {
@@ -193,7 +192,7 @@ router.post('/api/parts', async (req, res) => {
 
     const supplierId = rows.map(s => s?.supplierid)
     const supplierNumbers = rows.map(s => s?.datasupplierarticlenumber)
-    const categoryArticles = rows?.map(a => a?.datasupplierarticlenumber)
+    const categoryArticles = rows?.map(a => a?.datasupplierarticlenumber.replace(/\s/g, ''))
     const all = rows?.map(a => ({article: a?.datasupplierarticlenumber, brand: a?.description}))
     const brand = rows?.map(a => a?.description)
     let originalArticles = []
@@ -201,19 +200,29 @@ router.post('/api/parts', async (req, res) => {
     if (supplierId.length > 0) {
       const rows = await articles_original(supplierId, supplierNumbers, manufacturerid)
       
-      originalArticles = rows.map(a => a?.OENbr_clr)
+      originalArticles = rows.map(a => a?.OENbr_clr.replace(/\s|\//g, ''))
     }
 
     const all_articles = [...categoryArticles, ...originalArticles]
     const art = [...all, ...originalArticles.map(a => ({article: a, brand: ''}))]
-    const p = await db.Part.findAll({
+    
+    let p = await db.Part.findAll({
       where: {
-        article: {
-          [Op.in]: categoryArticles
-        },
-        brand: {
-          [Op.in]: brand
-        }
+        [Op.or]: [
+          {
+            article: { [Op.in]: supplierNumbers },
+            brand: { [Op.in]: brand } 
+          },
+          {
+            article: { [Op.in]: categoryArticles },
+            brand: { [Op.in]: brand } 
+          },
+          {
+            article: {
+              [Op.in]: originalArticles,
+            },
+          }
+        ],
       }
     });
 
@@ -248,7 +257,7 @@ router.post('/api/parts', async (req, res) => {
           // yourPrice: yourPrice,
           yourPrice: {amount: addPercent(price, margin_percentage)},
           images: images,
-          remainsAll: Object.entries(part.remainsAll).map(([key, value]) => ({storage: {name: key}, remain: value})),
+          remains: Object.entries(part.remainsAll).map(([key, value]) => ({storage: {name: key}, remain: value})),
           // remainsAll: remainsAll || [],
           // remains,
           // id,
@@ -280,7 +289,7 @@ router.post('/api/parts2', async (req, res) => {
 
     const supplierId = rows.map(s => s?.supplierid)
     const supplierNumbers = rows.map(s => s?.datasupplierarticlenumber)
-    const categoryArticles = rows?.map(a => a?.datasupplierarticlenumber)
+    const categoryArticles = rows?.map(a => a?.datasupplierarticlenumber.replace(/\s/g, ''))
     const all = rows?.map(a => ({article: a?.datasupplierarticlenumber, brand: a?.description}))
     const brand = rows?.map(a => a?.description)
     let originalArticles = []
@@ -288,20 +297,28 @@ router.post('/api/parts2', async (req, res) => {
     if (supplierId.length > 0) {
       const rows = await articles_original(supplierId, supplierNumbers, manufacturerid)
       
-      originalArticles = rows.map(a => a?.OENbr_clr)
+      originalArticles = rows.map(a => a?.OENbr_clr.replace(/\s|\//g, ''))
     }
 
-    const all_articles = [...categoryArticles, ...originalArticles]
     const art = [...all, ...originalArticles.map(a => ({article: a, brand: ''}))]
     
-    const p = await db.Part.findAll({
+    let p = await db.Part.findAll({
       where: {
-        article: {
-          [Op.in]: categoryArticles
-        },
-        brand: {
-          [Op.in]: brand
-        }
+        [Op.or]: [
+          {
+            article: { [Op.in]: supplierNumbers },
+            brand: { [Op.in]: brand } 
+          },
+          {
+            article: { [Op.in]: categoryArticles },
+            brand: { [Op.in]: brand } 
+          },
+          {
+            article: {
+              [Op.in]: originalArticles,
+            },
+          }
+        ],
       }
     });
 
@@ -310,44 +327,25 @@ router.post('/api/parts2', async (req, res) => {
       const ids = p.map(part => part.article)
       const brands = p.map(part => BRANDS_CHANGE[part.brand] || part.brand)
       const rows = await photos(ids, brands)
-        
-      const list = p.map(part => ({oem: part.article, brand: part.brand}))
-      //get details about part
-      // const result = await searchList(list)
-      //prepare details
-      // const details = result?.map(p => {
-      //   if (p?.details?.length > 0) {
-      //     return filterPartByExist({...p.details[0]})
-      //   }
-      // })
-      //prepare parts with details
+   
       const parts = p.map(part => {
         const brand = BRANDS_CHANGE[part.brand] || part.brand
         const img = rows?.filter(i => i.DataSupplierArticleNumber.replace(/\s|\//g, '') === part.article.replace(/\s|\//g, '') && i.brand === brand)
         const images = img?.length > 0 ? img.map(im =>  ({fullImagePath: `${WEBP_URL}/${im.FileName}`})) : []
-        // const images = img?.FileName ? [{fullImagePath: `${WEBP_URL}/${img.FileName}`}]: []
-        // const current = details.find(d => d?.article === part.article)
-        // const {id, yourPrice, availability, toOrder,remainsAll, remains} = current
-        //{storage: {id: number, name: string, originalName: string}, remain: string}[]
         const price = Number(part.price)
         return {
           ...part.dataValues,
           brand: {name: part.brand},
-          // yourPrice: yourPrice,
           yourPrice: {amount: addPercent(price, margin_percentage)},
           images: images,
           remainsAll: Object.entries(part.remainsAll).map(([key, value]) => ({storage: {name: key}, remain: value})),
-          // remainsAll: remainsAll || [],
-          // remains,
-          // id,
-          // availability, 
-          // toOrder,
           articles: art,
           remain: Object.values({...part.remainsAll}).reduce((acc, cur) =>  acc + Number(cur.replace(/\s|>|</g, '')) ,0)
         }
       })
       
       console.log('found parts', parts?.length)
+      res.json(parts);
     } else {
       res.json(art);
     }

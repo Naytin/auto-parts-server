@@ -4,10 +4,11 @@ const Part = require('./models/part');
 const Order = require('./models/Orders');
 const Reviews = require('./models/Reviews');
 const Settings = require('./models/Settings');
+const Brands = require('./models/Brands');
 const User = require('./models/User');
 const TreeTranslate = require('./models/TreeTranslate');
 
-const models = [Part, Order, Reviews, Settings, User, TreeTranslate];
+const models = [Part, Order, Reviews, Settings, User, TreeTranslate, Brands];
 
 let db = {};
 // Create a new instance of Sequelize

@@ -128,7 +128,7 @@ const getParams = async (token_data = '')=> {
     });
 
     console.log(response?.brands)
-    return response?.brands?.map(b => b.id)
+    return response?.brands
   } catch (error) {
     console.log(error)
     if (authErrors.includes(error?.response?.data?.message)) {
@@ -275,9 +275,10 @@ const main = async () => {
     //get params
     const brands = await getParams()
     if (!brands) throw new Error('Произошла ошибка получения брендов')
+    const brand = brands?.map(b => b.id)
     console.log('brands')
     //request for price list
-    const id = await requestPriceList(brands)
+    const id = await requestPriceList(brand)
     if (!id) throw new Error('Произошла ошибка в запросе на прайс лист')
     console.log('requestPriceList')
     //get token of price list
@@ -295,6 +296,14 @@ const main = async () => {
       for (let i = 0; i < price.length; i++) {
         await db.Part.create(price[i])
       }
+      
+      for (const brand of brands) {
+        await findOrCreate({
+          where: {name: brand.name},
+          defaults: {name: brand.name},
+        });
+      }
+
       console.log('delete table', res)
       console.log('getPriceList', pricelist?.length) 
     } else {

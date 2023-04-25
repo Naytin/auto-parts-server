@@ -4,6 +4,7 @@ const Part = (sequelize) => {
 	const Part = sequelize.define('Part', {
 		id: { type: DataType.INTEGER, unique: true, primaryKey: true, autoIncrement: true, allowNull: false, field: 'id' },
     article: { type: DataType.STRING, field: 'article'},
+		article_search: { type: DataType.STRING, field: 'article_search'},
     title: { type: DataType.STRING, field: 'title' },
 		brand: { type: DataType.STRING, field: 'brand' },
     price:{ type: DataType.STRING, field: 'price' },

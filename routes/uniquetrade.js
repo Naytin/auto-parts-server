@@ -59,11 +59,10 @@ router.post('/api/uniqueTrade/search', async (req, res) => {
         if (!Boolean(value.detailInfo?.length) && value?.article && withInfo) {
           console.log('detail not found', value.detailInfo)
           const details = await detail(value.article, BRANDS_CHANGE[value.brand.name] || value.brand.name)
-          
           data[index].detailInfo = details
         }
 
-        if (data.length > 1 && !withInfo) {
+        if (!Boolean(data?.images?.length)) {
           const img = await photos([value.article], [BRANDS_CHANGE[value.brand.name] || value.brand.name])
           const images = img?.length > 0 ? img.map(im =>  ({fullImagePath: `${WEBP_URL}/${im.FileName}`})) : []
           data[index].images = images

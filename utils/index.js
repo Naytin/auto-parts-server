@@ -60,6 +60,7 @@ const prepareParts = (parts) => {
 
     return {
       article,
+      article_search: article.replace(/\s|\//g, ''),
       title,
       brand,
       currency,
