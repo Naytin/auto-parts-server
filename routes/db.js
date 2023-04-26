@@ -189,10 +189,10 @@ router.get('/api/db/categories', async (req, res) => {
     // await tree.updateTree()
     // console.log('get')
     const t = await db.Tree.findOne({where: {id: 1}},{attributes: ['tree']});
-  
-    // console.log('category', t.tree.length)
+   
+    console.log('category', t.tree.length)
     
-    res.status(200).json(t?.tree)
+    res.status(200).json(t.tree)
   } catch (error) {
     res.status(500).send(error);
   }
@@ -228,8 +228,23 @@ router.post('/api/parts', async (req, res) => {
     const {modificationId, categoryId, brands, manufacturerid} = req.body;
     
     if (!modificationId || !categoryId || !manufacturerid || brands.length === 0) res.status(500).send('Не все параметры переданы для поиска запчастей');
-   
-    const rows = await articles(brands,modificationId,categoryId)
+    const b = await db.Brands.findAll()
+    const tecdoc_brands = await getData('/usr/local/lsws/Example/html/node/auto-parts-server/data/brands_for_request.json', false)
+    const tecdoc_brands_from = await getData('/usr/local/lsws/Example/html/node/auto-parts-server/data/brands_from_tecdoc.json',false)
+    const preparedB = b.map(r => r.name)
+    const arr = []
+
+    for (const b of preparedB) {
+      const res = tecdoc_brands[b]
+
+      if (res) {
+        arr.push(...res)
+      } else {
+        arr.push(b)
+      }
+    }
+
+    const rows = await articles(arr,modificationId,categoryId)
 
     const supplierId = rows.map(s => s?.supplierid)
     const supplierNumbers = rows.map(s => s?.datasupplierarticlenumber)
@@ -237,6 +252,17 @@ router.post('/api/parts', async (req, res) => {
     const all = rows?.map(a => ({article: a?.datasupplierarticlenumber, brand: a?.description}))
     const brand = rows?.map(a => a?.description)
     let originalArticles = []
+    const compareBrands = []
+
+    for (const b of brand) {
+      const res = tecdoc_brands_from[b]
+
+      if (res) {
+        compareBrands.push(...res)
+      } else {
+        compareBrands.push(b)
+      }
+    }
 
     if (supplierId.length > 0) {
       const rows = await articles_original(supplierId, supplierNumbers, manufacturerid)
@@ -252,11 +278,11 @@ router.post('/api/parts', async (req, res) => {
         [Op.or]: [
           {
             article: { [Op.in]: supplierNumbers },
-            brand: { [Op.in]: brand } 
+            brand: { [Op.in]: compareBrands } 
           },
           {
             article: { [Op.in]: categoryArticles },
-            brand: { [Op.in]: brand } 
+            brand: { [Op.in]: compareBrands } 
           },
           {
             article: {
@@ -325,7 +351,7 @@ router.post('/api/parts2', async (req, res) => {
     const {modificationId, categoryId, brands, manufacturerid} = req.body;
     
     if (!modificationId || !categoryId || !manufacturerid || brands.length === 0) res.status(500).send('Не все параметры переданы для поиска запчастей');
-   
+    
     const rows = await articles(brands,modificationId,categoryId)
 
     const supplierId = rows.map(s => s?.supplierid)

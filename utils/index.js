@@ -9,8 +9,14 @@ const exportResults = async (parsedResults, outputFile = 'data.json') => {
   fs.writeFileSync(appDir.replace('/cron', '') + outputFile, jsonContent);
 }
 
-const getData = async (data) => {
-  const response = fs.readFileSync(appDir.replace('/cron', '') + data,'utf8')
+const getData = async (data, root = true) => {
+  let response;
+  if (root) {
+    response = fs.readFileSync(appDir.replace('/cron', '') + data,'utf8')
+  } else {
+    response = fs.readFileSync(data,'utf8')
+  }
+  
   return JSON.parse(response)
 }
 

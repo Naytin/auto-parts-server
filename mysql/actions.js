@@ -92,7 +92,7 @@ const detail = async (id, brand) => {
 
 const articleCategory = async (article) => {
   try {
-    const categories = await getData('/data/categories.json')
+    const categories = await getData('/usr/local/lsws/Example/html/node/auto-parts-server/data/categories.json',false)
     console.log('start articleCategory')
     //check if category exists
     const articles = article.filter(a => {
@@ -143,9 +143,9 @@ const articleCategory = async (article) => {
 
 const category = async (pricelist) => {
   try {
-    const brands = await getData('/data/brands_for_request.json')
-    const modif = await getData('/data/passanger_bus.json')
-    const tecdoc_brands = await getData('/data/brands_from_tecdoc.json')
+    const brands = await getData('/usr/local/lsws/Example/html/node/auto-parts-server/data/brands_for_request.json',false)
+    const modif = await getData('/usr/local/lsws/Example/html/node/auto-parts-server/data/passanger_bus.json',false)
+    const tecdoc_brands = await getData('/usr/local/lsws/Example/html/node/auto-parts-server/data/brands_from_tecdoc.json',false)
     // const arr = await getData('/data/arr.json')
     const ids = modif.map(m => m.id)
     const questionMarks = modif.map(() => "?").join(",");
