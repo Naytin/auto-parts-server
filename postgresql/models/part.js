@@ -15,7 +15,7 @@ const Part = (sequelize) => {
     supplierid: { type: DataType.INTEGER, field: 'supplierid'},
     productid: { type: DataType.INTEGER, field: 'productid'},
     tBrand: { type: DataType.STRING, field: 'tBrand'},
-    category: { type: DataType.JSON, field: 'category'}
+    category: { type: DataType.JSONB, field: 'category'}
 	},{
 		tableName: 'part',
 		timestamps: false,

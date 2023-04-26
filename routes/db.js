@@ -2,15 +2,16 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../mysql')
 const {db} = require('../postgresql')
-const {filterPartByExist, addPercent} = require('../utils')
+const {filterPartByExist, addPercent, getData} = require('../utils')
 const {WEBP_URL, BRANDS_CHANGE, margin_percentage} = require('../consts')
 const {photos, articles, articles_original} = require('../mysql/actions')
-const {searchList} = require('../uniquetrade')
-const  {Op} = require('sequelize');
+const {prepareParts} = require('../utils/parts')
+const  {Op, Sequelize} = require('sequelize');
 const order = require('../postgresql/resolvers/order')
 const reviews = require('../postgresql/resolvers/reviews')
 const tree = require('../postgresql/resolvers/tree')
 const user = require('../postgresql/resolvers/user')
+
 // orders - start
 router.post('/api/db/order', async (req, res) => {
   try {
@@ -182,6 +183,46 @@ router.get('/api/db/user', async (req, res) => {
 // user - end
 //
 // get parts
+router.get('/api/db/categories', async (req, res) => {
+  try {
+    // console.log('start')
+    // await tree.updateTree()
+    // console.log('get')
+    const t = await db.Tree.findOne({where: {id: 1}},{attributes: ['tree']});
+  
+    // console.log('category', t.tree.length)
+    
+    res.status(200).json(t?.tree)
+  } catch (error) {
+    res.status(500).send(error);
+  }
+})
+
+router.get('/api/db/category', async (req, res) => {
+  try {
+    const categoryId = req.query.id
+
+    const result = await db.Part.findAll({
+      where: {
+        category: {
+          [Op.contains]: [Number(categoryId)]
+        }
+      }
+    });
+    console.log('parts', result.length)
+
+    if (Boolean(result.length)) {
+      const parts = await prepareParts(result)
+      console.log('prepared', parts?.length)
+      res.status(200).json(parts)
+    } else {
+      res.status(200).json([])
+    }
+  } catch (error) {
+    console.log(error)
+    res.status(500).send('Ошибка сервера');
+  }
+})
 router.post('/api/parts', async (req, res) => {
   try {
     const {modificationId, categoryId, brands, manufacturerid} = req.body;

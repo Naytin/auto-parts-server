@@ -1,4 +1,5 @@
 const {db} = require('../postgresql')
+const tree = require('../postgresql/resolvers/tree')
 const {token_data} = require('./config')
 const {prepareParts, timeout, checkExpiration, getData, exportResults} = require('../utils')
 const {authErrors} = require('../consts')
@@ -294,7 +295,7 @@ const main = async () => {
        //prepare price list with categories
       const pricel = await category(pricelist)
       if (!Boolean(pricel.length)) throw new Error('Произошла ошибка в подготовке категорий')
-      const price = prepareParts(pricelist)
+      const price = prepareParts(pricel)
 
       const res = await db.Part.destroy({where: {}})
       // await exportResults(price, '/data/arr.json')
@@ -311,6 +312,8 @@ const main = async () => {
 
       console.log('delete table', res)
       console.log('getPriceList', pricelist?.length) 
+      await timeout(18000)
+      await tree.updateTree()
     } else {
       throw new Error('Произошла ошибка в получении прайс листа')
     }

@@ -1,7 +1,5 @@
 const pool = require('./')
 const {preparePartsForDB, getData, exportResults} = require('../utils')
-const { dirname } = require('path');
-const appDir = dirname(require.main.filename);
 const articles = async (brands, modificationId, categoryId) => {
   try {
     const ids = Array.from(new Set(brands))
@@ -59,7 +57,7 @@ const photos = async (ids, brands) => {
     
     return rows;
   } catch (error) {
-    
+    console.log('photos error', error)
   }
 }
 
@@ -148,6 +146,7 @@ const category = async (pricelist) => {
     const brands = await getData('/data/brands_for_request.json')
     const modif = await getData('/data/passanger_bus.json')
     const tecdoc_brands = await getData('/data/brands_from_tecdoc.json')
+    // const arr = await getData('/data/arr.json')
     const ids = modif.map(m => m.id)
     const questionMarks = modif.map(() => "?").join(",");
     const batchSize = 1000;
@@ -189,8 +188,9 @@ const category = async (pricelist) => {
           arr.push(...changed)
         }
     }
-    console.log('finish parts', Object.keys(arr).length)
-
+    console.log('finish parts', arr.length)
+    let count = 0
+  
     for(const [index, p] of pricelist.entries()) {
       const key = p['Артикул'].replace(/[^a-zA-Z0-9]/g, '')
 
@@ -201,12 +201,14 @@ const category = async (pricelist) => {
           return a
         }
       })
-
+      console.log('part', index)
       if (detail) {
+        count++
         pricelist[index] = {...p, ...detail}
       }
     }
-    
+    console.log('all parts', arr.length)
+    console.log({count})
     return pricelist
   } catch (error) {
     console.log('error', error)
