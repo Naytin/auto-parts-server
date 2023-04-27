@@ -1,22 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const pool = require('../mysql')
-const {BRANDS_CHANGE} = require('../consts')
-const {detail, photos} = require('../mysql/actions')
+const {detail} = require('../mysql/actions')
 
 router.get('/api/category', async (req, res) => {
   try {
-    const modification = req.query.modification;
-    const category = req.query.category;
-
-    const [rows] = await pool.execute(`SELECT * FROM passanger_car_trees
-    WHERE passangercarid = ? 
-    AND LOWER(REGEXP_REPLACE(description, '[,/-]', '-')) LIKE ?`, [modification, `%${category}%`]);
-    if (rows.length > 0) {
-      res.json(rows[0]);
-     } else {
-      res.json([]);
-     }
+    res.status(200).json({res: 'test'})
   } catch (err) {
     console.error(err);
     res.status(500).send('Ошибка сервера');
@@ -63,16 +52,16 @@ router.get('/api/table', async (req, res) => {
 });
 
 
-router.post('/api/images', async (req, res) => {
-  try {
-    const {id, brands} = req.body;
-    const rows = await photos(id, brands)
-    res.json(rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send(err);
-  }
-});
+// router.post('/api/images', async (req, res) => {
+//   try {
+//     const {id, brands} = req.body;
+//     const rows = await photos(id, brands)
+//     res.json(rows);
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).send(err);
+//   }
+// });
 
 router.post('/api/model', async (req, res) => {
   try {
@@ -144,7 +133,9 @@ router.get('/api/detail', async (req, res) => {
   try {
     const id = req.query.id;
     const brand = req.query.brand;
-    const response = await detail(id, BRANDS_CHANGE[brand] || brand)
+    const tecdoc_brands = await getData('/usr/local/lsws/Example/html/node/auto-parts-server/data/brands_for_request.json', false)
+    const brands = tecdoc_brands[brand] || [brand]
+    const response = await detail(id, brands)
     
     res.json(response);
   } catch (err) {
@@ -165,31 +156,6 @@ router.post('/api/category', async (req, res) => {
      } else {
       res.json([]);
      }
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Ошибка сервера');
-  }
-});
-
-router.post('/api/categoryArticles', async (req, res) => {
-  try {
-    const {categoryId, modificationId, brands} = req.body
-    if (!modificationId || !categoryId || brands.length === 0) return []
-    const ids = Array.from(new Set(brands))
-    const questionMarks = ids.map(() => "?").join(",");
-
-    const [rows] = await pool.execute(`
-    SELECT DISTINCT article_links.supplierid, article_links.datasupplierarticlenumber, suppliers.description
-    FROM passanger_car_pds 
-    INNER JOIN article_links ON passanger_car_pds.productid = article_links.productid 
-    INNER JOIN suppliers ON article_links.supplierid = suppliers.id
-    WHERE passanger_car_pds.passangercarid = ? 
-        AND passanger_car_pds.nodeid = ? 
-        AND article_links.linkageid = ?
-        AND suppliers.description IN (${questionMarks})
-        `, [modificationId, categoryId, modificationId, ...ids]);
-      
-        res.json(rows);
   } catch (err) {
     console.error(err);
     res.status(500).send('Ошибка сервера');
@@ -226,46 +192,6 @@ router.post('/api/engines', async (req, res) => {
       OR SUBSTRING_INDEX(passanger_cars.constructioninterval, ' - ', -1) = ?
     )
     AND passanger_car_attributes.attributetype = "FuelType"`, [model, year, year, year]);
-      
-    res.json(rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Ошибка сервера');
-  }
-});
-
-router.post('/api/originalArticles', async (req, res) => {
-  try {
-    const {mark, supplierId, supplierNumber} = req.body
-    const questionMarks = supplierId.map(() => "?").join(",");
-    const questionMarkNumbers = supplierNumber.map(() => "?").join(",");
-
-    const [rows] = await pool.execute(`
-    SELECT article_oe.OENbr_clr FROM article_oe 
-    WHERE article_oe.manufacturerId = ? 
-      AND article_oe.supplierid IN (${questionMarks})
-      AND article_oe.datasupplierarticlenumber IN (${questionMarkNumbers}) 
-    GROUP BY OENbr_clr`, [mark, ...supplierId, ...supplierNumber]);
-      
-    res.json(rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Ошибка сервера');
-  }
-});
-
-router.post('/api/brands', async (req, res) => {
-  try {
-    const {modificationId, brands} = req.body
-    const ids = Array.from(new Set(brands))
-    const questionMarks = ids.map(() => "?").join(",");
-    
-    const [rows] = await pool.execute(`
-    SELECT article_links.linkageid, article_links.supplierid, suppliers.description, datasupplierarticlenumber
-    FROM article_links 
-    INNER JOIN suppliers ON article_links.supplierid = suppliers.id
-    WHERE linkageid = ?
-    AND suppliers.description IN (${questionMarks})`, [modificationId, ...ids]);
       
     res.json(rows);
   } catch (err) {

@@ -1,17 +1,62 @@
 const {photos} = require('../mysql/actions')
-const {WEBP_URL, BRANDS_CHANGE, margin_percentage} = require('../consts')
-const {addPercent} = require('./')
+const {WEBP_URL, margin_percentage} = require('../consts')
+const {addPercent, getData} = require('./')
+
+const brandsForTecdoc = async (brands) => {
+  try {
+    const tecdoc_brands = await getData('/usr/local/lsws/Example/html/node/auto-parts-server/data/brands_for_request.json', false)
+    // const tecdoc_brands = await getData('/data/brands_for_request.json')
+    const result = []
+
+    for (const b of brands) {
+      const res = tecdoc_brands[b]
+
+      if (res) {
+        result.push(...res)
+      } else {
+        result.push(b)
+      }
+    }
+
+    return result;
+  } catch (error) {
+    console.log('brandsForTecdoc, error', error)
+  }
+}
+
+const brandsFromTecdoc = async (brands) => {
+  try {
+    const tecdoc_brands_from = await getData('/usr/local/lsws/Example/html/node/auto-parts-server/data/brands_from_tecdoc.json',false)
+    // const tecdoc_brands_from = await getData('/data/brands_from_tecdoc.json')
+    const result = []
+
+    for (const b of brands) {
+      const res = tecdoc_brands_from[b]
+
+      if (res) {
+        result.push(...res)
+      } else {
+        result.push(b)
+      }
+    }
+    return result;
+  } catch (error) {
+    console.log('brandsFromTecdoc, error', error)
+  }
+}
 const prepareParts = async (p) => {
   try {
     const ids = p.map(part => part.article)
-    const brands = p.map(part => BRANDS_CHANGE[part.brand] || part.brand)
+    const b = p.map(part => part.brand)
+    const tecdoc_brands = await getData('/usr/local/lsws/Example/html/node/auto-parts-server/data/brands_for_request.json', false)
+    // const tecdoc_brands = await getData('/data/brands_for_request.json')
+    const brands = await brandsForTecdoc(b)
     const rows = await photos(ids, brands)
     
-    console.log('photos', rows?.length)
     //prepare parts with details
     const parts = p.map(part => {
-      const brand = BRANDS_CHANGE[part.brand] || part.brand
-      const img = rows?.filter(i => i.DataSupplierArticleNumber.replace(/\s|\//g, '') === part.article.replace(/\s|\//g, '') && i.brand === brand)
+      const brand = tecdoc_brands[part.brand] || [part.brand]
+      const img = rows?.filter(i => i.DataSupplierArticleNumber.replace(/\s|\//g, '') === part.article.replace(/\s|\//g, '') && brand.includes(i.brand))
       const images = img?.length > 0 ? img.map(im =>  ({fullImagePath: `${WEBP_URL}/${im.FileName}`})) : []
      
       const price = Number(part.price)
@@ -33,5 +78,7 @@ const prepareParts = async (p) => {
 }
 
 module.exports = {
-  prepareParts
+  prepareParts,
+  brandsFromTecdoc,
+  brandsForTecdoc
 }

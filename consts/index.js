@@ -9,7 +9,9 @@ const BRANDS_CHANGE = {
 }
 
 const CATEGORY_UNIQUETRADE = ['олива', 'лампи','Акумулятори', 'Акумуляторна батарея', 'олива моторна', 'колодки']
-const margin_percentage = 19.41324
+// const margin_percentage = 19.41324
+const margin_percentage = 20
+
 const UNIQUETRADE = {
   engine_oil: 'https://order24-api.utr.ua/catalog/akeneo/productsByPagination?type=engine_oil&page=1&limit=1000&categories=10',
   trans_oil: 'https://order24-api.utr.ua/catalog/akeneo/productsByPagination?type=gear_oil&page=1&limit=20&categories=11',

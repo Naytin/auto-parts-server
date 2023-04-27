@@ -1,12 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const pool = require('../mysql')
 const {db} = require('../postgresql')
-const {filterPartByExist, addPercent, getData} = require('../utils')
-const {WEBP_URL, BRANDS_CHANGE, margin_percentage} = require('../consts')
-const {photos, articles, articles_original} = require('../mysql/actions')
-const {prepareParts} = require('../utils/parts')
-const  {Op, Sequelize} = require('sequelize');
+const {articles, articles_original} = require('../mysql/actions')
+const {prepareParts,brandsForTecdoc, brandsFromTecdoc} = require('../utils/parts')
+const  {Op} = require('sequelize');
 const order = require('../postgresql/resolvers/order')
 const reviews = require('../postgresql/resolvers/reviews')
 const tree = require('../postgresql/resolvers/tree')
@@ -183,6 +180,21 @@ router.get('/api/db/user', async (req, res) => {
 // user - end
 //
 // get parts
+router.get('/api/db/categories2', async (req, res) => {
+  try {
+    const categories = await db.Part.findAll({attributes: ['category']});
+    const c = categories.filter(r => Boolean(r.category))
+      .map(a => a.category)
+      .flat()
+    const result = Array.from(new Set(c))
+
+    res.status(200).json({count: result.length, ids: result})
+  }
+  catch(error) {
+    res.status(500).send(`Ошибка сервера ${error}`);
+  }
+})
+
 router.get('/api/db/categories', async (req, res) => {
   try {
     // console.log('start')
@@ -225,53 +237,28 @@ router.get('/api/db/category', async (req, res) => {
 })
 router.post('/api/parts', async (req, res) => {
   try {
-    const {modificationId, categoryId, brands, manufacturerid} = req.body;
+    const {modificationId, categoryId, manufacturerid} = req.body;
     
-    if (!modificationId || !categoryId || !manufacturerid || brands.length === 0) res.status(500).send('Не все параметры переданы для поиска запчастей');
+    if (!modificationId || !categoryId || !manufacturerid) res.status(500).send('Не все параметры переданы для поиска запчастей');
     const b = await db.Brands.findAll()
-    const tecdoc_brands = await getData('/usr/local/lsws/Example/html/node/auto-parts-server/data/brands_for_request.json', false)
-    const tecdoc_brands_from = await getData('/usr/local/lsws/Example/html/node/auto-parts-server/data/brands_from_tecdoc.json',false)
     const preparedB = b.map(r => r.name)
-    const arr = []
-
-    for (const b of preparedB) {
-      const res = tecdoc_brands[b]
-
-      if (res) {
-        arr.push(...res)
-      } else {
-        arr.push(b)
-      }
-    }
+    const arr = await brandsForTecdoc(preparedB)
 
     const rows = await articles(arr,modificationId,categoryId)
-
+  
     const supplierId = rows.map(s => s?.supplierid)
     const supplierNumbers = rows.map(s => s?.datasupplierarticlenumber)
     const categoryArticles = rows?.map(a => a?.datasupplierarticlenumber.replace(/\s/g, ''))
     const all = rows?.map(a => ({article: a?.datasupplierarticlenumber, brand: a?.description}))
     const brand = rows?.map(a => a?.description)
     let originalArticles = []
-    const compareBrands = []
-
-    for (const b of brand) {
-      const res = tecdoc_brands_from[b]
-
-      if (res) {
-        compareBrands.push(...res)
-      } else {
-        compareBrands.push(b)
-      }
-    }
+    const compareBrands = await brandsFromTecdoc(brand)
 
     if (supplierId.length > 0) {
       const rows = await articles_original(supplierId, supplierNumbers, manufacturerid)
       
       originalArticles = rows.map(a => a?.OENbr_clr.replace(/\s|\//g, ''))
     }
-
-    const all_articles = [...categoryArticles, ...originalArticles]
-    const art = [...all, ...originalArticles.map(a => ({article: a, brand: ''}))]
     
     let p = await db.Part.findAll({
       where: {
@@ -294,46 +281,8 @@ router.post('/api/parts', async (req, res) => {
     });
 
     if (p.length > 0) {
-      //get images 
-      const ids = p.map(part => part.article)
-      const brands = p.map(part => BRANDS_CHANGE[part.brand] || part.brand)
-      const rows = await photos(ids, brands)
-        
-      const list = p.map(part => ({oem: part.article, brand: part.brand}))
-      //get details about part
-      // const result = await searchList(list)
-      //prepare details
-      // const details = result?.map(p => {
-      //   if (p?.details?.length > 0) {
-      //     return filterPartByExist({...p.details[0]})
-      //   }
-      // })
       //prepare parts with details
-      const parts = p.map(part => {
-        const brand = BRANDS_CHANGE[part.brand] || part.brand
-        const img = rows?.filter(i => i.DataSupplierArticleNumber.replace(/\s|\//g, '') === part.article.replace(/\s|\//g, '') && i.brand === brand)
-        const images = img?.length > 0 ? img.map(im =>  ({fullImagePath: `${WEBP_URL}/${im.FileName}`})) : []
-        // const images = img?.FileName ? [{fullImagePath: `${WEBP_URL}/${img.FileName}`}]: []
-        // const current = details.find(d => d?.article === part.article)
-        // const {id, yourPrice, availability, toOrder,remainsAll, remains} = current
-        //{storage: {id: number, name: string, originalName: string}, remain: string}[]
-        const price = Number(part.price)
-        return {
-          ...part.dataValues,
-          brand: {name: part.brand},
-          // yourPrice: yourPrice,
-          yourPrice: {amount: addPercent(price, margin_percentage)},
-          images: images,
-          remains: Object.entries(part.remainsAll).map(([key, value]) => ({storage: {name: key}, remain: value})),
-          // remainsAll: remainsAll || [],
-          // remains,
-          // id,
-          // availability, 
-          // toOrder,
-          articles: art,
-          remain: Object.values({...part.remainsAll}).reduce((acc, cur) =>  acc + Number(cur.replace(/\s|>|</g, '')) ,0)
-        }
-      })
+      const parts = await prepareParts(p)
       
       console.log('found parts', parts?.length)
       res.json(parts);
@@ -346,80 +295,47 @@ router.post('/api/parts', async (req, res) => {
   }
 });
 
-router.post('/api/parts2', async (req, res) => {
-  try {
-    const {modificationId, categoryId, brands, manufacturerid} = req.body;
-    
-    if (!modificationId || !categoryId || !manufacturerid || brands.length === 0) res.status(500).send('Не все параметры переданы для поиска запчастей');
-    
-    const rows = await articles(brands,modificationId,categoryId)
-
-    const supplierId = rows.map(s => s?.supplierid)
-    const supplierNumbers = rows.map(s => s?.datasupplierarticlenumber)
-    const categoryArticles = rows?.map(a => a?.datasupplierarticlenumber.replace(/\s/g, ''))
-    const all = rows?.map(a => ({article: a?.datasupplierarticlenumber, brand: a?.description}))
-    const brand = rows?.map(a => a?.description)
-    let originalArticles = []
-
-    if (supplierId.length > 0) {
-      const rows = await articles_original(supplierId, supplierNumbers, manufacturerid)
-      
-      originalArticles = rows.map(a => a?.OENbr_clr.replace(/\s|\//g, ''))
-    }
-
-    const art = [...all, ...originalArticles.map(a => ({article: a, brand: ''}))]
-    
-    let p = await db.Part.findAll({
-      where: {
-        [Op.or]: [
-          {
-            article: { [Op.in]: supplierNumbers },
-            brand: { [Op.in]: brand } 
-          },
-          {
-            article: { [Op.in]: categoryArticles },
-            brand: { [Op.in]: brand } 
-          },
-          {
-            article: {
-              [Op.in]: originalArticles,
-            },
-          }
-        ],
-      }
-    });
-
-    if (p.length > 0) {
-      //get images 
-      const ids = p.map(part => part.article)
-      const brands = p.map(part => BRANDS_CHANGE[part.brand] || part.brand)
-      const rows = await photos(ids, brands)
-   
-      const parts = p.map(part => {
-        const brand = BRANDS_CHANGE[part.brand] || part.brand
-        const img = rows?.filter(i => i.DataSupplierArticleNumber.replace(/\s|\//g, '') === part.article.replace(/\s|\//g, '') && i.brand === brand)
-        const images = img?.length > 0 ? img.map(im =>  ({fullImagePath: `${WEBP_URL}/${im.FileName}`})) : []
-        const price = Number(part.price)
-        return {
-          ...part.dataValues,
-          brand: {name: part.brand},
-          yourPrice: {amount: addPercent(price, margin_percentage)},
-          images: images,
-          remainsAll: Object.entries(part.remainsAll).map(([key, value]) => ({storage: {name: key}, remain: value})),
-          articles: art,
-          remain: Object.values({...part.remainsAll}).reduce((acc, cur) =>  acc + Number(cur.replace(/\s|>|</g, '')) ,0)
-        }
-      })
-      
-      console.log('found parts', parts?.length)
-      res.json(parts);
-    } else {
-      res.json(art);
-    }
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Ошибка сервера');
-  }
-});
-
 module.exports = router;
+
+
+// const ids = p.map(part => part.article)
+//       const b = p.map(part => part.brand)
+//       //prepare brands
+//       const brands = await brandsForTecdoc(b)
+//       //get images 
+//       const rows = await photos(ids, brands)
+//       // const list = p.map(part => ({oem: part.article, brand: part.brand}))
+//       //get details about part
+//       // const result = await searchList(list)
+//       //prepare details
+//       // const details = result?.map(p => {
+//       //   if (p?.details?.length > 0) {
+//       //     return filterPartByExist({...p.details[0]})
+//       //   }
+//       // })
+//       //prepare parts with details
+//       const parts = p.map(part => {
+//         const brand = tecdoc_brands[part.brand] || [part.brand]
+       
+//         const img = rows?.filter(i => i.DataSupplierArticleNumber.replace(/\s|\//g, '') === part.article.replace(/\s|\//g, '') && brand.includes(i.brand))
+//         const images = img?.length > 0 ? img.map(im =>  ({fullImagePath: `${WEBP_URL}/${im.FileName}`})) : []
+//         // const images = img?.FileName ? [{fullImagePath: `${WEBP_URL}/${img.FileName}`}]: []
+//         // const current = details.find(d => d?.article === part.article)
+//         // const {id, yourPrice, availability, toOrder,remainsAll, remains} = current
+//         //{storage: {id: number, name: string, originalName: string}, remain: string}[]
+//         const price = Number(part.price)
+//         return {
+//           ...part.dataValues,
+//           brand: {name: part.brand},
+//           yourPrice: {amount: addPercent(price, margin_percentage)},
+//           images: images,
+//           remains: Object.entries(part.remainsAll).map(([key, value]) => ({storage: {name: key}, remain: value})),
+//           // remainsAll: remainsAll || [],
+//           // remains,
+//           // id,
+//           // availability, 
+//           // toOrder,
+//           // articles: art,
+//           remain: Object.values({...part.remainsAll}).reduce((acc, cur) =>  acc + Number(cur.replace(/\s|>|</g, '')) ,0)
+//         }
+//       })

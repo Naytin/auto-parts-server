@@ -44,9 +44,6 @@ const photos = async (ids, brands) => {
   try {
     const questionMarks = ids.map(() => "?").join(",");
     const questionMarksBrands = brands.map(() => "?").join(",");
-    // const [rows] = await pool.execute(`SELECT FileName,supplierId,DataSupplierArticleNumber
-    //   FROM article_images 
-    //   WHERE DataSupplierArticleNumber IN (${questionMarks})`, [...ids]);
 
     const [rows] = await pool.execute(`SELECT article_images.DataSupplierArticleNumber, article_images.supplierId, article_images.PictureName
     , article_images.FileName,suppliers.description as brand
@@ -63,12 +60,14 @@ const photos = async (ids, brands) => {
 
 const detail = async (id, brand) => {
   try {
+    const questionMarksBrands = brand.map(() => "?").join(",");
+
     const [rows] = await pool.execute(`SELECT articles.DataSupplierArticleNumber, articles.supplierId, suppliers.description as brand
     , article_attributes.description, article_attributes.displaytitle, article_attributes.displayvalue
     FROM articles
-    INNER JOIN suppliers ON articles.supplierId = suppliers.id and suppliers.description = ?
+    INNER JOIN suppliers ON articles.supplierId = suppliers.id and suppliers.description IN (${questionMarksBrands})
     INNER JOIN article_attributes ON articles.supplierId = article_attributes.supplierid  AND article_attributes.DataSupplierArticleNumber = articles.DataSupplierArticleNumber
-    where articles.DataSupplierArticleNumber = ? or FoundString = ?`, [brand, id, id]);
+    where articles.DataSupplierArticleNumber = ? or FoundString = ?`, [...brand, id, id]);
       
     if (rows.length > 0) {
       const detail = rows.map(d => ({
@@ -195,7 +194,7 @@ const category = async (pricelist) => {
       const key = p['Артикул'].replace(/[^a-zA-Z0-9]/g, '')
 
       const detail = arr.find(a => {
-        const brands = tecdoc_brands[a.description] || [p['Бренд']]
+        const brands = tecdoc_brands[a.description] || [a.description]
 
         if (a.datasupplierarticlenumber.replace(/[^a-zA-Z0-9]/g, '') === key && brands.includes(p['Бренд'])) {
           return a
