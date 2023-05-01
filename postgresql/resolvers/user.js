@@ -5,7 +5,7 @@ const user = {
     try {
       return await db.User.findAll()
     } catch (error) {
-      
+      throw error
     }
   }
 }

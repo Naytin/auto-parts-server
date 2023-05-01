@@ -18,7 +18,7 @@ const articles = async (brands, modificationId, categoryId) => {
 
     return rows;
   } catch (error) {
-    
+    throw error
   }
 }
 
@@ -36,7 +36,7 @@ const articles_original = async (supplierId, supplierNumbers, manufacturerid) =>
 
     return rows;
   } catch (error) {
-    
+    throw error
   }
 }
 
@@ -54,7 +54,7 @@ const photos = async (ids, brands) => {
     
     return rows;
   } catch (error) {
-    console.log('photos error', error)
+    throw error
   }
 }
 
@@ -85,14 +85,13 @@ const detail = async (id, brand) => {
       return []
     }
   } catch (error) {
-    
+    throw error
   }
 }
 
 const articleCategory = async (article) => {
   try {
     const categories = await getData('/usr/local/lsws/Example/html/node/auto-parts-server/data/categories.json',false)
-    console.log('start articleCategory')
     //check if category exists
     const articles = article.filter(a => {
       const n = categories.filter(n => n.productid === a.productid && n.supplierid === a.supplierid)
@@ -112,7 +111,7 @@ const articleCategory = async (article) => {
         }
         return `(passanger_car_pds.productid = ${p.productid} AND passanger_car_pds.supplierid = ${p.supplierid}) OR`
       }).join('\n')
-      console.log('request', i, 'Category', batch.length)
+      // console.log('request', i, 'Category', batch.length)
 
       const [rows] = await pool.execute(`SELECT * 
         FROM passanger_car_pds 
@@ -125,7 +124,7 @@ const articleCategory = async (article) => {
     }
 
     if (articles.length > 0) {
-      console.log('found cat', cat.length)
+      // console.log('found cat', cat.length)
       const category = [...categories, ...cat]
 
       const changed = await preparePartsForDB(article, category)
@@ -133,10 +132,9 @@ const articleCategory = async (article) => {
      
       return changed;
     }
-    console.log('articleCategory pass')
     return await preparePartsForDB(article, categories)
   } catch (error) {
-    console.log('articleCategory error', error)
+    throw error
   }
 }
 
@@ -150,7 +148,7 @@ const category = async (pricelist) => {
     const questionMarks = modif.map(() => "?").join(",");
     const batchSize = 1000;
     const arr = []
-    console.log('all', pricelist?.length)
+    // console.log('all', pricelist?.length)
     
     for (let i = 0; i < pricelist.length; i += batchSize) {
       const batch = pricelist.slice(i, i + batchSize);
@@ -210,7 +208,7 @@ const category = async (pricelist) => {
     console.log({count})
     return pricelist
   } catch (error) {
-    console.log('error', error)
+    throw error
   }
 }
 

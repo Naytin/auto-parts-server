@@ -26,7 +26,7 @@ router.post('/api/db/order', async (req, res) => {
       })
     }
   } catch (error) {
-    res.status(500).send('Ошибка сервера');
+    throw new Error(error) 
   }
 })
 router.get('/api/db/order', async (req, res) => {
@@ -42,7 +42,7 @@ router.get('/api/db/order', async (req, res) => {
       })
     }
   } catch (error) {
-    res.status(500).send('Ошибка сервера');
+    throw new Error(error) 
   }
 })
 router.put('/api/db/order', async (req, res) => {
@@ -61,7 +61,7 @@ router.put('/api/db/order', async (req, res) => {
       })
     }
   } catch (error) {
-    res.status(500).send('Ошибка сервера');
+    throw new Error(error) 
   }
 })
 // orders - end
@@ -82,7 +82,7 @@ router.post('/api/db/reviews', async (req, res) => {
       })
     }
   } catch (error) {
-    res.status(500).send('Ошибка сервера');
+    throw new Error(error) 
   }
 })
 router.get('/api/db/reviews', async (req, res) => {
@@ -98,7 +98,7 @@ router.get('/api/db/reviews', async (req, res) => {
       })
     }
   } catch (error) {
-    res.status(500).send('Ошибка сервера');
+    throw new Error(error) 
   }
 })
 // reviews - end
@@ -120,7 +120,7 @@ router.post('/api/db/tree', async (req, res) => {
       })
     }
   } catch (error) {
-    res.status(500).send('Ошибка сервера');
+    throw new Error(error) 
   }
 })
 router.put('/api/db/tree', async (req, res) => {
@@ -139,7 +139,7 @@ router.put('/api/db/tree', async (req, res) => {
       })
     }
   } catch (error) {
-    res.status(500).send('Ошибка сервера');
+    throw new Error(error) 
   }
 })
 router.get('/api/db/tree', async (req, res) => {
@@ -155,7 +155,7 @@ router.get('/api/db/tree', async (req, res) => {
       })
     }
   } catch (error) {
-    res.status(500).send('Ошибка сервера');
+    throw new Error(error) 
   }
 })
 // tree - end
@@ -174,7 +174,7 @@ router.get('/api/db/user', async (req, res) => {
       })
     }
   } catch (error) {
-    res.status(500).send('Ошибка сервера');
+    throw new Error(error) 
   }
 })
 // user - end
@@ -191,7 +191,7 @@ router.get('/api/db/categories2', async (req, res) => {
     res.status(200).json({count: result.length, ids: result})
   }
   catch(error) {
-    res.status(500).send(`Ошибка сервера ${error}`);
+    throw new Error(error) 
   }
 })
 
@@ -201,12 +201,11 @@ router.get('/api/db/categories', async (req, res) => {
     // await tree.updateTree()
     // console.log('get')
     const t = await db.Tree.findOne({where: {id: 1}},{attributes: ['tree']});
-   
-    console.log('category', t.tree.length)
+  
     
     res.status(200).json(t.tree)
   } catch (error) {
-    res.status(500).send(error);
+    throw new Error(error) 
   }
 })
 
@@ -221,18 +220,15 @@ router.get('/api/db/category', async (req, res) => {
         }
       }
     });
-    console.log('parts', result.length)
 
     if (Boolean(result.length)) {
       const parts = await prepareParts(result)
-      console.log('prepared', parts?.length)
       res.status(200).json(parts)
     } else {
       res.status(200).json([])
     }
   } catch (error) {
-    console.log(error)
-    res.status(500).send('Ошибка сервера');
+    throw new Error(error) 
   }
 })
 router.post('/api/parts', async (req, res) => {
@@ -284,14 +280,12 @@ router.post('/api/parts', async (req, res) => {
       //prepare parts with details
       const parts = await prepareParts(p)
       
-      console.log('found parts', parts?.length)
       res.json(parts);
     } else {
       res.json(p);
     }
   } catch (err) {
-    console.error(err);
-    res.status(500).send('Ошибка сервера');
+    throw new Error(err) 
   }
 });
 

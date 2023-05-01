@@ -170,7 +170,7 @@ router.post('/api/models', async (req, res) => {
 router.post('/api/modification', async (req, res) => {
   try {
     const {modification} = req.body
-    console.log('query', modification)
+  
     const [rows] = await pool.execute(`
     SELECT DISTINCT passanger_cars.id, passanger_cars.description,passanger_cars.fulldescription, passanger_cars.constructioninterval, passanger_cars.modelid, passanger_car_attributes.displayvalue
     FROM passanger_cars

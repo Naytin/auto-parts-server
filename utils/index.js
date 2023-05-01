@@ -98,10 +98,10 @@ const prepareParts = (parts) => {
     // } = p;
     const { 
       "Артикул": article,
-      "Наименование": title,
+      "Найменування": title,
       "Бренд": brand,
       "Валюта": currency,
-      "Цена": price,
+      "Ціна": price,
       datasupplierarticlenumber,
       supplierid,
       description,

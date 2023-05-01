@@ -22,21 +22,21 @@ const order = {
 
       return order.id
     } catch (error) {
-      
+      throw error
     }
   },
   Orders: async () => {
     try {
       return await db.Order.findAll()
     } catch (error) {
-      
+      throw error
     }
   },
   ChangeStatus: async (fields) => {
     try {
       return await db.Order.update({status: fields.status},{where: {id: fields.id}})
     } catch (error) {
-      
+      throw error
     }
   },
 }

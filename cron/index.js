@@ -7,6 +7,6 @@ cron.schedule('0 1 * * *', () => {
     console.log('Запускаем скрипт обновления прайс листа');
     main()
   } catch (error) {
-    console.log(error)
+    throw new Error(error)
   }
 });

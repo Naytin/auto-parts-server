@@ -25,7 +25,7 @@ const checkJWT = async (token) => {
 
     return response
   } catch (error) {
-    
+    throw error
   }
 }
 
@@ -47,18 +47,15 @@ const refresh_token = async () => {
         resolve(res);
       });
     });
-    console.log()
     return response
   } catch (error) {
-    console.log(error)
+    throw error
   }
 }
 
 const updateToken = async () => {
   //refresh token
-  console.log('refresh token');
   const uniq_trade_token = await refresh_token()
-  console.log('update token', uniq_trade_token);
 
   const date = new Date();
   const expiration_date = new Date(date.getTime());
@@ -74,15 +71,12 @@ const getToken = async () => {
   if (!authKey) {
     await db.Settings.create();
   }
-  console.log('key', authKey?.expiration_date);
-  console.log('key', authKey?.uniq_trade_token);
+
   let isValid;
   
   if (authKey?.expiration_date) {
     isValid = checkExpiration(authKey?.expiration_date)
   }
-  
-  console.log({isValid});
   
   if (!isValid) {
     //update token
@@ -92,7 +86,6 @@ const getToken = async () => {
   const message = await checkJWT(token)
   
   if (authErrors.includes(message)) {
-    console.log('jwt not valid', message)
     return await updateToken()
   }
   
@@ -118,27 +111,20 @@ const getParams = async (token_data = '')=> {
     const response = await new Promise((resolve, reject) => {
       request(options, (error, response) => {
         if (error) {
-          console.log('reject response brands')
           reject(error)
         };
-        console.log(response?.statusCode)
-        console.log(response?.statusMessage)
         const res = JSON.parse(response.body)
         resolve(res);
       });
     });
 
-    console.log(response?.brands)
     return response?.brands
   } catch (error) {
-    console.log(error)
     if (authErrors.includes(error?.response?.data?.message)) {
-      console.log(error?.response?.data);
       const token = await updateToken()
       return getParams(token)
     } else {
-      console.log('Произошла ошибка:', error.message);
-      console.log('Произошла ошибка data:', error?.response?.data);
+      throw error
     }
   }
 }
@@ -176,12 +162,10 @@ const requestPriceList = async (brands = [], token_data = '')=> {
     return response.id
   } catch (error) {
     if (authErrors.includes(error?.response?.data?.message)) {
-      console.log(error?.response?.data);
       const token = await updateToken()
       return requestPriceList(brands, token)
     } else {
-      console.log('Произошла ошибка:', error.message);
-      console.log('Произошла ошибка data:', error?.response?.data);
+      throw error
     }
   }
 }
@@ -211,7 +195,6 @@ const getPriceLists = async (id = '', token_data = '')=> {
     });
 
     const pricelist = response.find(p => p.id === id)
-    console.log('1', pricelist)
     if (pricelist.status === 'in queue') {
       await timeout(6000)
       getPriceLists(id, token)
@@ -222,12 +205,10 @@ const getPriceLists = async (id = '', token_data = '')=> {
 
   } catch (error) {
     if (authErrors.includes(error?.response?.data?.message)) {
-      console.log(error?.response?.data);
       const token = await updateToken()
       return getPriceLists(id, token)
     } else {
-      console.log('Произошла ошибка:', error.message);
-      console.log('Произошла ошибка data:', error?.response?.data);
+      throw error
     }
   }
 }
@@ -259,12 +240,10 @@ const getPriceList = async (id = '', token_data = '')=> {
     return response
   } catch (error) {
     if (authErrors.includes(error?.response?.data?.message)) {
-      console.log(error?.response?.data);
       const token = await updateToken()
       return await getPriceList(id, token)
     } else {
-      console.log('Произошла ошибка:', error.message);
-      console.log('Произошла ошибка data:', error?.response?.data);
+      throw error
     }
   }
 }
@@ -272,7 +251,7 @@ const getPriceList = async (id = '', token_data = '')=> {
 const main = async () => {
   try {
     await timeout(18000)
-    console.log('init main')
+    // console.log('init main')
     //get params
     const brands = await getParams()
     if (!brands) throw new Error('Произошла ошибка получения брендов')
@@ -281,12 +260,12 @@ const main = async () => {
     //request for price list
     const id = await requestPriceList(brand)
     if (!id) throw new Error('Произошла ошибка в запросе на прайс лист')
-    console.log('requestPriceList')
+    // console.log('requestPriceList')
     //get token of price list
     await timeout(18000)
     const token = await getPriceLists(id)
     if (!token) throw new Error('Произошла ошибка в получении токена прайс листа')
-    console.log('getPriceLists', token)
+    // console.log('getPriceLists', token)
     // git price list
     const pricelist = await getPriceList(token)
     // const pricelist = await getData('/data/pricelist.json')
@@ -323,6 +302,40 @@ const main = async () => {
 }
 
 //for router
+const check = async (query, brand, token_data) => {
+  try {
+    let token = token_data
+    if (!token_data) {
+      token = await getToken()
+    }
+
+    const options = {
+      method: 'GET',
+      url: `https://order24-api.utr.ua/api/search/${query}?brand=${brand}`,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': token
+      }
+    };
+
+    const response = await new Promise((resolve, reject) => {
+      request(options, (error, response) => {
+        if (error) reject(error);
+        const res = JSON.parse(response.body)
+        resolve(res);
+      });
+    });
+    
+    return response
+  } catch (error) {
+    if (authErrors.includes(error?.response?.data?.message)) {
+      const token = await updateToken()
+      return check(query, brand, token)
+    } else {
+      throw error
+    }
+  }
+}
 const search = async (query, withInfo = 0, token_data) => {
   try {
     let token = token_data
@@ -350,12 +363,10 @@ const search = async (query, withInfo = 0, token_data) => {
     return response
   } catch (error) {
     if (authErrors.includes(error?.response?.data?.message)) {
-      console.log(error?.response?.data);
       const token = await updateToken()
       return search(query, withInfo, token)
     } else {
-      console.log('Произошла ошибка:', error.message);
-      console.log('Произошла ошибка data:', error?.response?.data);
+      throw error
     }
   }
 }
@@ -389,12 +400,10 @@ const searchList = async (list, token_data) => {
     return response
   } catch (error) {
     if (authErrors.includes(error?.response?.data?.message)) {
-      console.log(error?.response?.data);
       const token = await updateToken()
       return searchList(list, token)
     } else {
-      console.log('Произошла ошибка:', error.message);
-      console.log('Произошла ошибка data:', error?.response?.data);
+      throw error
     }
   }
 }
@@ -427,12 +436,10 @@ const applicability = async (id, token_data) => {
     return response
   } catch (error) {
     if (authErrors.includes(error?.response?.data?.message)) {
-      console.log(error?.response?.data);
       const token = await updateToken()
       return applicability(id, token)
     } else {
-      console.log('Произошла ошибка:', error.message);
-      console.log('Произошла ошибка data:', error?.response?.data);
+      throw error
     }
   }
 }
@@ -461,12 +468,10 @@ const analogs = async (brand, article)  => {
     return response
   } catch (error) {
     if (authErrors.includes(error?.response?.data?.message)) {
-      console.log(error?.response?.data);
       await updateToken()
       return analogs(brand, article)
     } else {
-      console.log('Произошла ошибка:', error.message);
-      console.log('Произошла ошибка data:', error?.response?.data);
+      throw error
     }
   }
 }
@@ -477,5 +482,6 @@ module.exports = {
   analogs,
   search,
   searchList,
-  applicability
+  applicability,
+  check
 }

@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const {search,analogs, applicability, searchList} = require('../uniquetrade')
+const {search,analogs, applicability, searchList, check} = require('../uniquetrade')
 const {photos, detail} = require('../mysql/actions')
 const {WEBP_URL} = require('../consts')
 const {brandsForTecdoc} = require('../utils/parts')
+const {getData} = require('../utils')
 
 router.post('/api/uniqueTrade/searchList', async (req, res) => {
   try {
@@ -27,8 +28,7 @@ router.post('/api/uniqueTrade/searchList', async (req, res) => {
       res.status(200).json({})
     }
   } catch (err) {
-    console.error(err);
-    res.status(500).send('Ошибка сервера - searchList');
+    throw new Error(err)
   }
 });
 router.post('/api/uniqueTrade/applicability', async (req, res) => {
@@ -43,8 +43,25 @@ router.post('/api/uniqueTrade/applicability', async (req, res) => {
       res.status(404).json({ error: 'Нічого не знайдено'})
     }
   } catch (err) {
-    console.error(err);
-    res.status(500).send('Ошибка сервера - search');
+    throw new Error(err)
+  }
+});
+
+router.post('/api/uniqueTrade/checkPrice', async (req, res) => {
+  try {
+    const {query, brand} = req.body;
+    
+    const response = await check(query, brand)
+  
+    if (response) {
+      const data = response?.details
+
+      res.status(200).json(data[0])
+    } else {
+      res.status(404).json({ error: 'Нічого не знайдено'})
+    }
+  } catch (err) {
+    throw new Error(err)
   }
 });
 router.post('/api/uniqueTrade/search', async (req, res) => {
@@ -60,7 +77,7 @@ router.post('/api/uniqueTrade/search', async (req, res) => {
       //if there are no details, get them from tecdoc
       for (const [index, value] of data?.entries()) {
         if (!Boolean(value.detailInfo?.length) && value?.article && withInfo) {
-          console.log('detail not found', value.detailInfo)
+          
           const brands = tecdoc_brands[value.brand.name] || [value.brand.name]
           const details = await detail(value.article, brands)
           data[index].detailInfo = details
@@ -79,8 +96,7 @@ router.post('/api/uniqueTrade/search', async (req, res) => {
       res.status(404).json({ error: 'Нічого не знайдено'})
     }
   } catch (err) {
-    console.error(err);
-    res.status(500).send(err);
+    throw new Error(err)
   }
 });
 
@@ -100,8 +116,7 @@ router.post('/api/uniqueTrade/analogs-images', async (req, res) => {
       res.status(404).json({ error: 'Нічого не знайдено'})
     }
   } catch (err) {
-    console.error(err);
-    res.status(500).send('Ошибка сервера - analogs');
+    throw new Error(err)
   }
 });
 
@@ -126,8 +141,7 @@ router.post('/api/uniqueTrade/analogs', async (req, res) => {
       res.status(404).json({ error: 'Нічого не знайдено'})
     }
   } catch (err) {
-    console.error(err);
-    res.status(500).send('Ошибка сервера - analogs');
+    throw new Error(err)
   }
 });
 

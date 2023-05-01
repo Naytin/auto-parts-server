@@ -2,13 +2,13 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../mysql')
 const {detail} = require('../mysql/actions')
+const {getData} = require('../utils')
 
 router.get('/api/category', async (req, res) => {
   try {
     res.status(200).json({res: 'test'})
   } catch (err) {
-    console.error(err);
-    res.status(500).send('Ошибка сервера');
+    throw new Error(err) 
   }
 });
 
@@ -31,8 +31,7 @@ router.get('/api/tables', async (req, res) => {
 
     res.json(result);
   } catch (err) {
-    console.error(err);
-    res.status(500).send(err);
+    throw new Error(err)
   }
 });
 router.get('/api/table', async (req, res) => {
@@ -46,22 +45,9 @@ router.get('/api/table', async (req, res) => {
       
     res.json(rows);
   } catch (err) {
-    console.error(err);
-    res.status(500).send(err);
+    throw new Error(err)
   }
 });
-
-
-// router.post('/api/images', async (req, res) => {
-//   try {
-//     const {id, brands} = req.body;
-//     const rows = await photos(id, brands)
-//     res.json(rows);
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).send(err);
-//   }
-// });
 
 router.post('/api/model', async (req, res) => {
   try {
@@ -76,8 +62,7 @@ router.post('/api/model', async (req, res) => {
     res.json([]);
   }
   } catch (err) {
-    console.error(err);
-    res.status(500).send('Ошибка сервера');
+    throw new Error(err)
   }
 });
 
@@ -101,15 +86,14 @@ router.post('/api/models', async (req, res) => {
       
     res.json(rows);
   } catch (err) {
-    console.error(err);
-    res.status(500).send(err);
+    throw new Error(err)
   }
 });
 
 router.post('/api/modification', async (req, res) => {
   try {
     const {modification} = req.body
-    console.log('query', modification)
+
     const [rows] = await pool.execute(`
     SELECT DISTINCT passanger_cars.id, passanger_cars.description,passanger_cars.fulldescription, passanger_cars.constructioninterval, passanger_cars.modelid, passanger_car_attributes.displayvalue
     FROM passanger_cars
@@ -124,8 +108,7 @@ router.post('/api/modification', async (req, res) => {
     res.json([]);
    }
   } catch (err) {
-    console.error(err);
-    res.status(500).send('Ошибка сервера');
+    throw new Error(err)
   }
 });
 
@@ -139,8 +122,7 @@ router.get('/api/detail', async (req, res) => {
     
     res.json(response);
   } catch (err) {
-    console.error(err);
-    res.status(500).send(err);
+    throw new Error(err)
   }
 });
 
@@ -157,8 +139,7 @@ router.post('/api/category', async (req, res) => {
       res.json([]);
      }
   } catch (err) {
-    console.error(err);
-    res.status(500).send('Ошибка сервера');
+    throw new Error(err)
   }
 });
 
@@ -169,8 +150,7 @@ router.post('/api/tree', async (req, res) => {
       
     res.json(rows);
    } catch (err) {
-    console.error(err);
-    res.status(500).send('Ошибка сервера');
+    throw new Error(err)
   }
 });
 
@@ -195,8 +175,7 @@ router.post('/api/engines', async (req, res) => {
       
     res.json(rows);
   } catch (err) {
-    console.error(err);
-    res.status(500).send('Ошибка сервера');
+    throw new Error(err)
   }
 });
 

@@ -20,7 +20,7 @@ const brandsForTecdoc = async (brands) => {
 
     return result;
   } catch (error) {
-    console.log('brandsForTecdoc, error', error)
+    throw error
   }
 }
 
@@ -41,7 +41,7 @@ const brandsFromTecdoc = async (brands) => {
     }
     return result;
   } catch (error) {
-    console.log('brandsFromTecdoc, error', error)
+    throw error
   }
 }
 const prepareParts = async (p) => {
@@ -59,21 +59,25 @@ const prepareParts = async (p) => {
       const img = rows?.filter(i => i.DataSupplierArticleNumber.replace(/\s|\//g, '') === part.article.replace(/\s|\//g, '') && brand.includes(i.brand))
       const images = img?.length > 0 ? img.map(im =>  ({fullImagePath: `${WEBP_URL}/${im.FileName}`})) : []
      
-      const price = Number(part.price)
+      const {'Найменування': title, 'Ціна': p, ...rest} = part.remainsAll
+      const price = Number(part.price || p)
       return {
         ...part.dataValues,
+        title: title || part.title,
         brand: {name: part.brand},
+        price: price || part.price,
         yourPrice: {amount: addPercent(price, margin_percentage)},
         images: images,
-        remains: Object.entries(part.remainsAll).map(([key, value]) => ({storage: {name: key}, remain: value})),
+        remains: Object.entries(rest).map(([key, value]) => ({storage: {name: key}, remain: value})),
+        remainsAll: rest,
         // articles: art,
-        remain: Object.values({...part.remainsAll}).reduce((acc, cur) =>  acc + Number(cur.replace(/\s|>|</g, '')) ,0)
+        remain: Object.values({...rest}).reduce((acc, cur) =>  acc + Number(cur?.replace(/\s|>|</g, '')) ,0)
       }
     })
 
     return parts;
   } catch (error) {
-    console.log('prepare parts error', error)
+    throw new Error(error)
   }
 }
 

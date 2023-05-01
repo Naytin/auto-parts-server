@@ -6,7 +6,7 @@ const tree = {
     try {
       return await db.Tree.findOne({where: {id: 1}})
     } catch (error) {
-      
+      throw error
     }
   },
   updateTreeError: async (notFound) => {
@@ -17,14 +17,14 @@ const tree = {
       
       return await db.Tree.update({treeError},{where: {id: 1}})
     } catch (error) {
-      
+      throw error
     }
   },
   createTreeTranslate: async (tree) => {
     try {
       return await db.Tree.create({tree, treeError: []})
     } catch (error) {
-      
+      throw error
     }
   },
   updateTree: async () => {
