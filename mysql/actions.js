@@ -67,7 +67,8 @@ const detail = async (id, brand) => {
     FROM articles
     INNER JOIN suppliers ON articles.supplierId = suppliers.id and suppliers.description IN (${questionMarksBrands})
     INNER JOIN article_attributes ON articles.supplierId = article_attributes.supplierid  AND article_attributes.DataSupplierArticleNumber = articles.DataSupplierArticleNumber
-    where articles.DataSupplierArticleNumber = ? or FoundString = ?`, [...brand, id, id]);
+    where articles.DataSupplierArticleNumber = ? or FoundString = ? 
+    group by article_attributes.displayvalue, article_attributes.displaytitle, article_attributes.description`, [...brand, id, id]);
       
     if (rows.length > 0) {
       const detail = rows.map(d => ({
