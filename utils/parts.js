@@ -1,6 +1,7 @@
 const {photos} = require('../mysql/actions')
 const {WEBP_URL, margin_percentage} = require('../consts')
-const {addPercent, getData} = require('./')
+const {addPercent, getData, countAvailability, filterParts} = require('./')
+const {analogs} = require('../uniquetrade')
 
 const brandsForTecdoc = async (brands) => {
   try {
@@ -44,10 +45,54 @@ const brandsFromTecdoc = async (brands) => {
     throw error
   }
 }
+
+const getAnalogs = async (parts) => {
+  try {
+    const result = []
+    let count = 0
+    for (const p of parts) {
+      const {article, brand} = p
+
+      if (count < 3) {
+        const res = await analogs(brand, article)
+
+        if (Boolean(res.length)) {
+          const prepare = res.map(part => {
+            const {brand, title, article, yourPrice, remains} = part
+            const remain = countAvailability(part)
+
+            return {
+              brand: brand.name,
+              title,
+              article,
+              yourPrice,
+              remains,
+              remain
+            }
+          }).filter(p => p.remain > 0)
+
+          result.push(...prepare)
+
+          if (res.length > 5) {
+            count++
+          }
+        }
+      }
+    }
+    return result;
+  } catch (error) {
+    throw error
+  }
+}
 const prepareParts = async (p) => {
   try {
-    const ids = p.map(part => part.article)
-    const b = p.map(part => part.brand)
+    let analog = []
+    if (p.length < 30) {
+      analog = await getAnalogs(p)
+    }
+    const allParts = [...p, ...analog]
+    const ids = allParts.map(part => part.article)
+    const b = allParts.map(part => part.brand)
     const tecdoc_brands = await getData('/usr/local/lsws/Example/html/node/auto-parts-server/data/brands_for_request.json', false)
     // const tecdoc_brands = await getData('/data/brands_for_request.json')
     const brands = await brandsForTecdoc(b)
@@ -74,8 +119,24 @@ const prepareParts = async (p) => {
         remain: Object.values({...rest}).reduce((acc, cur) =>  acc + Number(cur?.replace(/\s|>|</g, '')) ,0)
       }
     })
+    //prepare analogs
+    const a = analog.map(part => {
+      const brand = tecdoc_brands[part.brand] || [part.brand]
+      const img = rows?.filter(i => i.DataSupplierArticleNumber.replace(/\s|\//g, '') === part.article.replace(/\s|\//g, '') && brand.includes(i.brand))
+      const images = img?.length > 0 ? img.map(im =>  ({fullImagePath: `${WEBP_URL}/${im.FileName}`})) : []
+     
+      return {
+        ...part,
+        title: part.title,
+        brand: {name: part.brand},
+        images: images,
+        remainsAll: part?.remainsAll || []
+      }
+    })
+    //filter duplicates
+    const filtered = filterParts([...a, ...parts])
 
-    return parts;
+    return filtered;
   } catch (error) {
     throw new Error(error)
   }

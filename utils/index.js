@@ -86,6 +86,32 @@ const preparePartsForDB = async (parts, node) => {
   }
 }
 
+const filterParts = (parts) => {
+  try {
+    const filtered =  parts.reduce((acc,cur) => {
+      acc[`${cur.article.replace(/\s|\//g, '')}-${cur.brand.name}`] = cur
+      return acc
+    },{})
+
+    return Object.values(filtered)
+  } catch (error) {
+    throw error
+  }
+}
+
+const countAvailability = (part) => {
+  try {
+    if (!part.remains || part.remains?.length < 1) return 0
+
+    return part.remains?.reduce((acc,cur) => {
+      const n = cur.remain.replace(/\s|>|</g, '');
+      return acc + Number(n)
+    },0)
+  } catch (error) {
+    throw error
+  }
+}
+
 const prepareParts = (parts) => {
   return parts.map(p => {
     // const { 
@@ -136,5 +162,7 @@ module.exports = {
   addPercent,
   preparePartsForDB,
   getData,
-  exportResults
+  exportResults,
+  filterParts,
+  countAvailability
 }
