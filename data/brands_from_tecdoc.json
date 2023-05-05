@@ -42,5 +42,7 @@
   "BF": ["BF GERMANY"],
   "SNR": ["NTN-SNR", "SNR", "NTN"],
   "VALEO": ["VALEO", "VALEO PHC"],
-  "FEBI BILSTEIN": ["FEBI BILSTEIN", "FEBI"]
+  "FEBI BILSTEIN": ["FEBI BILSTEIN", "FEBI"],
+  "LuK": ["LUK"],
+  "NiBK": ["NIBK"]
 }

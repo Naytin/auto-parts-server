@@ -21,7 +21,7 @@ const brandsForTecdoc = async (brands) => {
 
     return result;
   } catch (error) {
-    throw error
+    throw new Error(error)
   }
 }
 
@@ -42,7 +42,7 @@ const brandsFromTecdoc = async (brands) => {
     }
     return result;
   } catch (error) {
-    throw error
+    throw new Error(error)
   }
 }
 
@@ -81,7 +81,7 @@ const getAnalogs = async (parts) => {
     }
     return result;
   } catch (error) {
-    throw error
+    throw new Error(error)
   }
 }
 const prepareParts = async (p) => {

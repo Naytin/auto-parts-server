@@ -25,7 +25,7 @@ const checkJWT = async (token) => {
 
     return response
   } catch (error) {
-    throw error
+    throw new Error(error)
   }
 }
 
@@ -49,7 +49,7 @@ const refresh_token = async () => {
     });
     return response
   } catch (error) {
-    throw error
+    throw new Error(error)
   }
 }
 
@@ -124,7 +124,7 @@ const getParams = async (token_data = '')=> {
       const token = await updateToken()
       return getParams(token)
     } else {
-      throw error
+      throw new Error(error)
     }
   }
 }
@@ -165,7 +165,7 @@ const requestPriceList = async (brands = [], token_data = '')=> {
       const token = await updateToken()
       return requestPriceList(brands, token)
     } else {
-      throw error
+      throw new Error(error)
     }
   }
 }
@@ -208,7 +208,7 @@ const getPriceLists = async (id = '', token_data = '')=> {
       const token = await updateToken()
       return getPriceLists(id, token)
     } else {
-      throw error
+      throw new Error(error)
     }
   }
 }
@@ -243,41 +243,52 @@ const getPriceList = async (id = '', token_data = '')=> {
       const token = await updateToken()
       return await getPriceList(id, token)
     } else {
-      throw error
+      throw new Error(error)
     }
+  }
+}
+//function to retry the request doubling the waiting time, each failed - a maximum of 5 times
+const getTokenWithRetry = async (id, retryCount = 0) => {
+  try {
+    if (retryCount > 5) {
+      throw new Error('Произошла ошибка в получении токена прайс листа');
+    }
+  
+    const token = await getPriceLists(id);
+    if (!token) {
+      await timeout(18000 * Math.pow(2, retryCount));
+      return getTokenWithRetry(id, retryCount + 1);
+    }
+  
+    return token;
+  } catch (error) {
+    throw new Error(error)
   }
 }
 
 const main = async () => {
   try {
     await timeout(18000)
-    // console.log('init main')
     //get params
     const brands = await getParams()
     if (!brands) throw new Error('Произошла ошибка получения брендов')
     const brand = brands?.map(b => b.id)
-    // console.log('brands')
     //request for price list
     const id = await requestPriceList(brand)
     if (!id) throw new Error('Произошла ошибка в запросе на прайс лист')
-    // console.log('requestPriceList')
     //get token of price list
-    await timeout(18000)
-    const token = await getPriceLists(id)
-    if (!token) throw new Error('Произошла ошибка в получении токена прайс листа')
-    // console.log('getPriceLists', token)
+    await timeout(30000)
+    const token = await getTokenWithRetry(id);
     // git price list
     const pricelist = await getPriceList(token)
-    // const pricelist = await getData('/data/pricelist.json')
-   
+    //
     if (pricelist?.length > 0) {
        //prepare price list with categories
       const pricel = await category(pricelist)
       if (!Boolean(pricel.length)) throw new Error('Произошла ошибка в подготовке категорий')
       const price = prepareParts(pricel)
-
       const res = await db.Part.destroy({where: {}})
-      // await exportResults(price, '/data/arr.json')
+
       for (let i = 0; i < price.length; i++) {
         await db.Part.create(price[i])
       }
@@ -297,7 +308,7 @@ const main = async () => {
       throw new Error('Произошла ошибка в получении прайс листа')
     }
   } catch (error) {
-    throw error
+    throw new Error(error)
   }
 }
 
@@ -332,7 +343,7 @@ const check = async (query, brand, token_data) => {
       const token = await updateToken()
       return check(query, brand, token)
     } else {
-      throw error
+      throw new Error(error)
     }
   }
 }
@@ -366,7 +377,7 @@ const search = async (query, withInfo = 0, token_data) => {
       const token = await updateToken()
       return search(query, withInfo, token)
     } else {
-      throw error
+      throw new Error(error)
     }
   }
 }
@@ -403,7 +414,7 @@ const searchList = async (list, token_data) => {
       const token = await updateToken()
       return searchList(list, token)
     } else {
-      throw error
+      throw new Error(error)
     }
   }
 }
@@ -439,7 +450,7 @@ const applicability = async (id, token_data) => {
       const token = await updateToken()
       return applicability(id, token)
     } else {
-      throw error
+      throw new Error(error)
     }
   }
 }
@@ -471,7 +482,7 @@ const analogs = async (brand, article)  => {
       await updateToken()
       return analogs(brand, article)
     } else {
-      throw error
+      throw new Error(error)
     }
   }
 }

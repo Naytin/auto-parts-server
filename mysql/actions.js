@@ -18,7 +18,7 @@ const articles = async (brands, modificationId, categoryId) => {
 
     return rows;
   } catch (error) {
-    throw error
+    throw new Error(error)
   }
 }
 
@@ -36,7 +36,7 @@ const articles_original = async (supplierId, supplierNumbers, manufacturerid) =>
 
     return rows;
   } catch (error) {
-    throw error
+    throw new Error(error)
   }
 }
 
@@ -54,7 +54,7 @@ const photos = async (ids, brands) => {
     
     return rows;
   } catch (error) {
-    throw error
+    throw new Error(error)
   }
 }
 
@@ -86,7 +86,7 @@ const detail = async (id, brand) => {
       return []
     }
   } catch (error) {
-    throw error
+    throw new Error(error)
   }
 }
 
@@ -135,7 +135,7 @@ const articleCategory = async (article) => {
     }
     return await preparePartsForDB(article, categories)
   } catch (error) {
-    throw error
+    throw new Error(error)
   }
 }
 
@@ -159,12 +159,11 @@ const category = async (pricelist) => {
         
         const article = art.replace(/[^a-zA-Z0-9]/g, '')
         const brand = brands[p['Бренд']] ? brands[p['Бренд']].map((brand) => `'${brand}'`).join(',') : `'${p['Бренд']}'`;
-        
-        if (idx === batch.length - 1 ) {
+        // if (idx === batch.length - 1 ) {
           return `(articles.FoundString = "${article}" AND suppliers.description IN (${brand}))`
-        }
-        return `(articles.FoundString = "${article}" AND suppliers.description IN (${brand})) OR`
-      }).join('\n')
+        // }
+        // return `(articles.FoundString = "${article}" AND suppliers.description IN (${brand})) OR`
+      }).join(' OR\n ')
       console.log('request', i, 'parts', batch.length)
       
       const [rows] = await pool.execute(`SELECT article_links.datasupplierarticlenumber, articles.supplierid, suppliers.description, article_links.productid
@@ -209,7 +208,7 @@ const category = async (pricelist) => {
     console.log({count})
     return pricelist
   } catch (error) {
-    throw error
+    throw new Error(error)
   }
 }
 

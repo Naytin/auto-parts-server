@@ -47,5 +47,7 @@
   "TRUCKTEC": ["TRUCKTEC AUTOMOTIVE"],
   "VERNET": ["CALORSTAT by Vernet"],
   "ZF": ["ZF", "ZF Parts"],
-  "VALEO PHC": ["VALEO", "VALEO PHC"]
+  "VALEO PHC": ["VALEO", "VALEO PHC"],
+  "LUK": ["LuK"],
+  "NIBK": ["NiBK"]
 }

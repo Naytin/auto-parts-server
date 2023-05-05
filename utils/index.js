@@ -95,7 +95,7 @@ const filterParts = (parts) => {
 
     return Object.values(filtered)
   } catch (error) {
-    throw error
+    throw new Error(error)
   }
 }
 
@@ -108,7 +108,7 @@ const countAvailability = (part) => {
       return acc + Number(n)
     },0)
   } catch (error) {
-    throw error
+    throw new Error(error)
   }
 }
 

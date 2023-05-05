@@ -5,14 +5,14 @@ const reviews = {
     try {
       return await db.Reviews.findAll({where: {status: true}})
     } catch (error) {
-      throw error
+      throw new Error(error)
     }
   },
   createReview: async (fields) => {
     try {
       return await db.Reviews.create({...fields, status: true, created_at: new Date().toUTCString()})
     } catch (error) {
-      throw error
+      throw new Error(error)
     }
   },
 }
