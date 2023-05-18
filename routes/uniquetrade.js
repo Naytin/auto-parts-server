@@ -16,14 +16,38 @@ router.post('/api/uniqueTrade/searchList', async (req, res) => {
       let part = response[0].details[0]
       const brands = tecdoc_brands[part.brand.name] || [part.brand.name]
       
-      const details = await detail(part.article, brands)
-      part.detailInfo = details
+      //get info and photo from tecdoc if not exists
+      if (!Boolean(part?.detailAkeneoInfo?.length)) {
+        const details = await detail(part.article, brands)
+        part.detailInfo = details
+      } else {
+        part.detailInfo = part?.detailAkeneoInfo
+      }
+      //
+      if (!Boolean(part?.images?.length)) {
+        const img = await photos([part.article], brands)
+        const images = img?.length > 0 ? img.map(im =>  ({fullImagePath: `${WEBP_URL}/${im.FileName}`})) : []
+        part.images = images
+      } else {
+        part.images = part?.images.map(img => ({fullImagePath: img?.fullImagePath, thumbnail: img?.thumbnail}))
+      }
       
-      const img = await photos([part.article], brands)
-      const images = img?.length > 0 ? img.map(im =>  ({fullImagePath: `${WEBP_URL}/${im.FileName}`})) : []
-      part.images = images
+      const {
+        detailInfo, 
+        detailCard, 
+        remains, 
+        remainsAll, 
+        title,
+        article, 
+        brand, 
+        displayBrand, 
+        yourPrice, 
+        yourPriceEUR, 
+        id, 
+        images, 
+        category} = part
       
-      res.status(200).json(part)
+      res.status(200).json({detailInfo, detailCard, remains, remainsAll, title,article, brand, displayBrand, yourPrice, yourPriceEUR, id, images, category})
     } else {
       res.status(200).json({})
     }
@@ -31,6 +55,7 @@ router.post('/api/uniqueTrade/searchList', async (req, res) => {
     throw new Error(err)
   }
 });
+
 router.post('/api/uniqueTrade/applicability', async (req, res) => {
   try {
     const {query} = req.body;
